@@ -1,0 +1,22 @@
+# Working state
+.env
+*.env
+*.key
+*.seed
+secrets.json
+reveal.local.json
+wallet-data/
+*.sqlite
+*.sqlite-journal
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+*.log
+*.tmp

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShieldBid — sealed bids on Zcash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08090a; --panel:#0f1011; --surface:#191a1b; --raise:#28282c;
+    --ink:#f7f8f8; --ink-2:#d0d6e0; --ink-3:#8a8f98; --ink-4:#62666d;
+    --line:rgba(255,255,255,.08); --line-sub:rgba(255,255,255,.05);
+    --brand:#5e6ad2; --accent:#7170ff; --accent-hi:#828fff;
+    --green:#27a644; --emerald:#10b981; --amber:#d9a343;
+    --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink-2); font-family:var(--sans);
+    font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+    font-feature-settings:'cv01','ss03';
+  }
+  a{color:var(--accent);text-decoration:none}
+  a:hover{color:var(--accent-hi)}
+  code,.mono{font-family:var(--mono);font-size:13px;letter-spacing:0}
+
+  /* ---------- top bar ---------- */
+  .bar{
+    position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;
+    padding:0 22px;height:54px;background:rgba(15,16,17,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line-sub);
+  }
+  .mark{display:flex;align-items:center;gap:9px;font-weight:590;color:var(--ink);font-size:15px;letter-spacing:-.24px}
+  .mark .glyph{width:16px;height:16px;flex:0 0 16px}
+  .bar .grow{flex:1}
+  .pill{
+    display:inline-flex;align-items:center;gap:7px;border:1px solid #23252a;border-radius:9999px;
+    padding:3px 11px;font-size:12px;font-weight:510;color:var(--ink-2);white-space:nowrap;
+  }
+  .pill.demo{border-color:rgba(217,163,67,.35);color:#e8c887}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--emerald)}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1200px;margin:0 auto;padding:26px 22px 72px}
+  .crumbs{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-4);margin-bottom:18px}
+  .crumbs b{color:var(--ink-3);font-weight:510}
+  .grid{display:grid;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);gap:18px;align-items:start}
+  @media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+
+  .card{
+    background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:12px;
+  }
+  .card + .card{margin-top:18px}
+  .card-h{
+    display:flex;align-items:baseline;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line-sub);
+  }
+  .card-h h2{margin:0;font-size:15px;font-weight:590;color:var(--ink);letter-spacing:-.2px}
+  .card-h .sub{font-size:12px;color:var(--ink-4);margin-left:auto}
+  .card-b{padding:18px}
+
+  /* ---------- lot header ---------- */
+  .lot{display:flex;gap:16px;align-items:flex-start;padding:18px}
+  .thumb{
+    width:76px;height:76px;flex:0 0 76px;border-radius:10px;border:1px solid var(--line);
+    background:
+      radial-gradient(120% 120% at 20% 15%, rgba(113,112,255,.35), transparent 60%),
+      linear-gradient(150deg,#15161a,#0c0d0f);
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--ink-4)
+  }
+  .lot h1{margin:0 0 4px;font-size:24px;line-height:1.2;font-weight:510;letter-spacing:-.29px;color:var(--ink)}
+  .lot .meta{font-size:13px;color:var(--ink-4)}
+  .facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:0 18px 18px}
+  @media (max-width:620px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .fact .k{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-4)}
+  .fact .v{font-size:17px;color:var(--ink);font-weight:510;margin-top:3px;font-variant-numeric:tabular-nums}
+  .fact .v small{font-size:12px;color:var(--ink-4);font-weight:400;margin-left:4px}
+
+  /* ---------- address ---------- */
+  .addr-row{display:flex;gap:10px;align-items:stretch}
+  .addr{
+    flex:1;min-width:0;background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:8px;
+    padding:12px 14px;font-family:var(--mono);font-size:13px;color:var(--ink);
+    word-break:break-all;line-height:1.55;
+  }
+  .addr .u{color:var(--accent)}
+  button{
+    font-family:var(--sans);font-size:13px;font-weight:510;color:#e2e4e7;cursor:pointer;
+    background:rgba(255,255,255,.04);border:1px solid #24282c;border-radius:6px;padding:0 14px;
+    transition:background .12s ease,color .12s ease,border-color .12s ease;
+  }
+  button:hover{background:rgba(255,255,255,.08);color:var(--ink)}
+  button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  button.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+  button.primary:hover{background:var(--accent-hi);border-color:var(--accent-hi)}
+  button.done{color:var(--emerald);border-color:rgba(16,185,129,.4)}
+
+  /* ---------- steps ---------- */
+  ol.steps{list-style:none;margin:0;padding:0;counter-reset:s}
+  ol.steps > li{position:relative;padding:0 0 20px 40px;counter-increment:s}
+  ol.steps > li:last-child{padding-bottom:0}
+  ol.steps > li::before{
+    content:counter(s);position:absolute;left:0;top:1px;width:24px;height:24px;border-radius:6px;
+    background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--ink-3);
+    font-family:var(--mono);font-size:12px;display:flex;align-items:center;justify-content:center;
+  }
+  ol.steps > li::after{content:'';position:absolute;left:11.5px;top:29px;bottom:6px;width:1px;background:var(--line-sub)}
+  ol.steps > li:last-child::after{display:none}
+  ol.steps strong{color:var(--ink);font-weight:590}
+  ol.steps p{margin:4px 0 0;font-size:14px;color:var(--ink-3);letter-spacing:-.1px}
+
+  .fmt{
+    display:flex;align-items:center;gap:12px;margin-top:10px;background:rgba(0,0,0,.4);
+    border:1px solid var(--line);border-radius:8px;padding:12px 14px;
+  }
+  .fmt code{color:var(--ink);font-size:14px}
+  .fmt .hint{margin-left:auto;font-size:11px;color:var(--ink-4)}
+
+  /* ---------- rail ---------- */
+  .kv{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line-sub);font-size:14px}
+  .kv:first-child{border-top:0;padding-top:0}
+  .kv .k{color:var(--ink-3)}
+  .kv .v{color:var(--ink);font-weight:510;font-variant-numeric:tabular-nums}
+  .sealbox{
+    display:flex;gap:10px;align-items:center;background:rgba(94,106,210,.07);
+    border:1px solid rgba(94,106,210,.28);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--ink-2)
+  }
+  .lock{width:14px;height:14px;flex:0 0 14px;color:var(--accent)}
+  .hash{
+    margin-top:12px;background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:8px;
+    padding:11px 13px;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);word-break:break-all;line-height:1.6
+  }
+  .wallets{font-size:13px;margin:0;padding:0;list-style:none}
+  .wallets li{display:flex;gap:9px;padding:6px 0;color:var(--ink-3);align-items:baseline}
+  .wallets li b{color:var(--ink-2);font-weight:510}
+  .yes{color:var(--emerald)} .no{color:#c2606a}
+  .warn{
+    margin-top:14px;padding:11px 13px;border:1px solid rgba(217,163,67,.28);background:rgba(217,163,67,.06);
+    border-radius:8px;font-size:12.5px;color:#ddc189;line-height:1.55
+  }
+
+  /* ---------- table ---------- */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{
+    text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-4);
+    font-weight:510;padding:0 14px 10px;border-bottom:1px solid var(--line-sub)
+  }
+  td{padding:11px 14px;border-bottom:1px solid var(--line-sub);color:var(--ink-3);font-family:var(--mono);font-size:12.5px}
+  tr:last-child td{border-bottom:0}
+  td.strong{color:var(--ink-2)}
+  .tag{font-family:var(--sans);font-size:11px;font-weight:510;padding:2px 8px;border-radius:9999px;border:1px solid var(--line);color:var(--ink-3)}
+  .tag.ok{color:var(--emerald);border-color:rgba(16,185,129,.3)}
+  .tag.sealed{color:var(--accent);border-color:rgba(113,112,255,.3)}
+
+  .foot{margin-top:26px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--ink-4)}
+  .foot .sp{flex:1}
+  .note{font-size:13px;color:var(--ink-3);line-height:1.65}
+  .note strong{color:var(--ink-2);font-weight:510}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <span class="mark">
+    <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 2.5 20.5 7v10L12 21.5 3.5 17V7L12 2.5Z" stroke="#7170ff" stroke-width="1.4"/>
+      <path d="M12 7.5v9M8.5 10.5h7M8.5 13.5h7" stroke="#d0d6e0" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>
+    ShieldBid
+  </span>
+  <span class="pill demo">DEMO LOT</span>
+  <span class="grow"></span>
+  <span class="pill"><span class="dot"></span> Zcash mainnet</span>
+  <span class="pill" id="clock">seals in —</span>
+</header>
+
+<main class="wrap">
+  <nav class="crumbs">
+    <b>Private markets</b> <span>/</span> <span>Lot 001</span> <span>/</span> <span>sealed-bid window</span>
+  </nav>
+
+  <div class="grid">
+    <!-- ============ left ============ -->
+    <div>
+      <section class="card">
+        <div class="lot">
+          <div class="thumb">LOT 001</div>
+          <div>
+            <h1>zkSNARKs #9631</h1>
+            <div class="meta">Seller <b style="color:var(--ink-2);font-weight:510">JACKSOxx</b> · window opened 2026-09-29 00:00 UTC</div>
+          </div>
+        </div>
+        <div class="facts">
+          <div class="fact"><div class="k">Reserve (public)</div><div class="v">1.20 <small>ZEC</small></div></div>
+          <div class="fact"><div class="k">Sealed bids</div><div class="v" id="count">3 <small>bids</small></div></div>
+          <div class="fact"><div class="k">Reveal at</div><div class="v" style="font-size:15px">2026-10-05 <small>18:00 UTC</small></div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-h">
+          <h2>Place a sealed bid</h2>
+          <span class="sub">one shielded transfer, one memo</span>
+        </div>
+        <div class="card-b">
+          <div class="addr-row">
+            <div class="addr" id="ua">u1q<span class="u">8f4k2m9r7xd3p6wv5ht0zaqy2ncejgk3</span>7l9s4b6mu8xrz2vdhp5ytqa3fn0wkecm<s>…</s></div>
+            <button id="copy" title="Copy the seller's unified address">Copy</button>
+          </div>
+          <p class="note" style="margin:10px 0 22px">
+            This is the seller's <strong>unified (shielded) address</strong>. Send from a <strong>shielded</strong> balance —
+            a transfer from a transparent address is public and the memo is rejected.
+          </p>
+
+          <ol class="steps">
+            <li>
+              <strong>Open a wallet that can attach a memo</strong>
+              <p>Zashi, Zkool, Ywallet or Zingo. A memo field is the only requirement.</p>
+            </li>
+            <li>
+              <strong>Send to the address above, amount = your maximum price</strong>
+              <p>You will pay exactly this amount only if you win. If the clearing price is lower, the difference is refunded to the address you sent from.</p>
+            </li>
+            <li>
+              <strong>Type the bid into the memo field</strong>
+              <div class="fmt">
+                <code id="memo">BID 1.55</code>
+                <button id="copymemo" style="margin-left:auto">Copy memo</button>
+                <span class="hint">amount + nothing else</span>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-h">
+          <h2>Commitment log</h2>
+          <span class="sub">what an outside observer can see</span>
+        </div>
+        <div class="card-b" style="padding-top:6px">
+          <table>
+            <thead>
+              <tr><th>When</th><th>Transaction</th><th>Amount</th><th>Who</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>09-29 06:12</td><td class="strong">a41c…9e02</td><td>sealed</td><td>sealed</td><td><span class="tag sealed">sealed</span></td></tr>
+              <tr><td>09-29 11:48</td><td class="strong">7d0b…31fa</td><td>sealed</td><td>sealed</td><td><span class="tag sealed">sealed</span></td></tr>
+              <tr><td>09-30 02:07</td><td class="strong">c93e…7741</td><td>sealed</td><td>sealed</td><td><span class="tag sealed">sealed</span></td></tr>
+              <tr><td>—</td><td class="strong">reveal pending</td><td>—</td><td>—</td><td><span class="tag">2026-10-05 18:00 UTC</span></td></tr>
+            </tbody>
+          </table>
+          <p class="note" style="margin:14px 0 0">
+            A third party cannot even count the bids from the chain. The rows above are what the <strong>seller</strong>
+            chooses to publish — the txid list is the seller's receipt, and <strong>each bidder can check their own txid appears in it</strong>.
+            That is what stops a seller from quietly dropping or inventing a bid.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ rail ============ -->
+    <aside>
+      <section class="card">
+        <div class="card-h"><h2>Sealed state</h2></div>
+        <div class="card-b">
+          <div class="sealbox">
+            <svg class="lock" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="4.5" y="10.5" width="15" height="9.5" rx="2" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke="currentColor" stroke-width="1.4"/>
+            </svg>
+            Amounts are encrypted end-to-end. Not even the seller sees them before opening the memo.
+          </div>
+          <div style="margin-top:14px">
+            <div class="kv"><span class="k">Bids sealed</span><span class="v">3</span></div>
+            <div class="kv"><span class="k">Amounts visible</span><span class="v" style="color:var(--ink-4)">no</span></div>
+            <div class="kv"><span class="k">Bidder identities</span><span class="v" style="color:var(--ink-4)">no</span></div>
+            <div class="kv"><span class="k">Live high bid</span><span class="v" style="color:var(--ink-4)">not possible</span></div>
+          </div>
+          <div class="hash">commitment at deadline = sha256(sorted sealed memo texts)<br>0000000000000000000000000000000000000000000000000000000000000000</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-h"><h2>Before you send</h2></div>
+        <div class="card-b">
+          <ul class="wallets">
+            <li><span class="yes">✓</span><span><b>Zashi</b>, <b>Zkool</b> — memo + shielded send</span></li>
+            <li><span class="yes">✓</span><span><b>Ywallet</b>, <b>Zingo</b> — memo field supported</span></li>
+            <li><span class="no">✕</span><span><b>Exchanges</b> (withdrawals) — no memo field</span></li>
+            <li><span class="no">✕</span><span><b>OKX Web3 wallet</b> — no memo field</span></li>
+            <li><span class="no">✕</span><span><b>Transparent (t-addr) sends</b> — memo is not transmitted</span></li>
+          </ul>
+          <div class="warn">
+            Bids sent before the window opens, after the deadline, or below the reserve are not counted.
+            A late transfer is not refunded automatically — the seller returns it in the final batch.
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <div class="foot">
+    <span>ShieldBid · protocol v0.1 · MIT</span>
+    <span class="sp"></span>
+    <a href="../docs/SPEC.md">Protocol spec</a>
+    <a href="../docs/BIDDER_GUIDE.md">Bidder guide</a>
+  </div>
+</main>
+
+<script>
+  // Countdown to the reveal moment. Static page: no backend, no tracking.
+  var TARGET = Date.UTC(2026, 9, 5, 18, 0, 0);
+  var el = document.getElementById('clock');
+  function tick(){
+    var d = TARGET - Date.now();
+    if (d <= 0) { el.textContent = 'bidding closed'; return; }
+    var dd = Math.floor(d/864e5), hh = Math.floor(d%864e5/36e5), mm = Math.floor(d%36e5/6e4);
+    el.textContent = 'seals in ' + dd + 'd ' + hh + 'h ' + mm + 'm';
+  }
+  tick(); setInterval(tick, 30000);
+
+  function hook(btnId, srcId, label){
+    var b = document.getElementById(btnId), s = document.getElementById(srcId);
+    if(!b || !s) return;
+    b.addEventListener('click', function(){
+      var t = s.textContent.trim();
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject())
+        .then(function(){ b.textContent = 'Copied'; b.classList.add('done'); })
+        .catch(function(){ b.textContent = 'Copy failed'; })
+        .finally(function(){ setTimeout(function(){ b.textContent = label; b.classList.remove('done'); }, 1600); });
+    });
+  }
+  hook('copy','ua','Copy');
+  hook('copymemo','memo','Copy memo');
+</script>
+</body>
+</html>
