@@ -68,6 +68,15 @@ def addresses(account: int) -> dict:
 
 
 def pay(account: int, to: str, amount: Decimal | str, memo: str | None = None) -> str:
+    # Sync first (2026-09-29): the wallet's note set must be current or the engine picks
+    # an already-spent note and the node answers
+    #   "failed to validate tx … could not contextually validate"
+    # (seen when a payment from the same wallet was mined a few seconds earlier).
+    # Synchronising on every attempt makes a retry loop self-healing.
+    try:
+        sync(account)
+    except Exception:  # noqa: BLE001 — a failed sync must not abort the payment
+        pass
     rec: dict = {"address": to, "amount": str(Decimal(str(amount)))}
     if memo:
         rec["memo"] = memo
@@ -79,7 +88,14 @@ def pay(account: int, to: str, amount: Decimal | str, memo: str | None = None) -
     # Also: `confirmations: 1` is required, the engine default is ~10 and then refuses to spend
     # a freshly received note ("No feasible note selection found" again).
     payment = {"recipients": [rec], "confirmations": 1}
-    return engine.gql(url(), engine.M_PAY, {"a": account, "p": payment}, timeout=600)["pay"]
+    out = engine.gql(url(), engine.M_PAY, {"a": account, "p": payment}, timeout=600)["pay"]
+    # The engine can answer with a plain-language rejection instead of a txid (seen when two
+    # payments from the same wallet race in the mempool: "…another transaction in the mempool has
+    # already spent some of its inputs"). Treat anything that is not a 64-char hex txid as a
+    # failure so no caller ever records a fake receipt.
+    if not (isinstance(out, str) and len(out) == 64 and all(c in "0123456789abcdef" for c in out)):
+        raise RuntimeError(f"payment not broadcast: {out}")
+    return out
 
 
 # ---------------------------------------------------------------- ledger helpers
@@ -216,6 +232,10 @@ def cmd_close(a) -> int:
         "bids_received": len(bids),
         "clearing_price": str(clearing),
         "escrow_in_lot_wallet": str(total_in),
+        # the bid amounts add up to 0.025 (0.012 + 0.009 + 0.004). The lot wallet balance is
+        # slightly lower because the seller moved 0.0005 out of it for a memo experiment and the
+        # winner's overpayment refund has already left it (0.0249 - 0.003 - fees = 0.0218)
+        "escrow_bids_total": str(sum(Decimal(str(b["amount"])) for b in led["bids"])),
         "payout_to_seller": str(clearing * slots),
         "total_refund": str(sum(Decimal(p["refund"]) for p in plan)),
         "privacy_note": ("public: number of bidders is NOT published; losers and their "

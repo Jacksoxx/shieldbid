@@ -1,0 +1,24 @@
+{
+  "protocol": "SHIELDBID/1",
+  "auction_id": "DEMO-01",
+  "network": "mainnet",
+  "source": "txids/heights read back from the local engine (transactionsByAccount), not typed by hand",
+  "note": "Every leg that moved money during DEMO-01. Amounts are readable only by the parties (shielded pool); txids are public.",
+  "in_total_from_user": "0.032",
+  "out_to_user": "0.0307",
+  "chain_fees_approx": "0.001",
+  "legs": [
+    {"i": 1, "what": "用户出价（手机钱包手发）", "amount": "0.012", "from": "user", "to": "lot/seller", "txid": "56bb6efa5a23841f2212211de3776f66a3231d28a230e831c0e9f6a05c715a40", "height": 3499413},
+    {"i": 2, "what": "用户注资（供机器人出价）", "amount": "0.02", "from": "user", "to": "bidder A", "txid": "5c60b3448db4df867cb133838330a216c1ffd74e2584b7ad87b01e1fdd3a43f0", "height": 3499430},
+    {"i": 3, "what": "拨付投标人B", "amount": "0.012", "from": "bidder A", "to": "bidder B", "txid": "a14355bf95222be4a573ce8d31ab659c860cba10e66c73754b91e18b13373fb3", "height": 3499438},
+    {"i": 4, "what": "ROBOT-B 出价", "amount": "0.009", "from": "bidder B", "to": "lot/seller", "txid": "91fefe4345372c4d70a85d3360430092be6ac8e21196bca0803a53862a575909", "height": 3499451},
+    {"i": 5, "what": "ROBOT-A 出价", "amount": "0.004", "from": "bidder A", "to": "lot/seller", "txid": "4f7926eeadc0dd281b5a010a00f75b08b1a29e8e4b82fd5990d227edf08fa22f", "height": 3499451},
+    {"i": 6, "what": "退还你多付的钱", "amount": "0.003", "from": "lot/seller", "to": "user U1", "txid": "90d35aee94903166cbbd3ecbc9f24d96f0c7d38f6f4f37cd971d7c0a8a968cbe", "height": 3499452},
+    {"i": 7, "what": "落标者全额退款", "amount": "0.004", "from": "lot/seller", "to": "bidder A", "txid": "f29dbd244048653e2f69cd7bd494d0c79681501164164640a5bb53f3dc8d7b7d", "height": 3499454},
+    {"i": 8, "what": "清仓扫款", "amount": "0.0036", "from": "bidder A", "to": "user U1", "txid": "359082d37b804a3c81d226f2c9e396257a06fbbbec25fb42ab9abfe7c2092688", "height": 3499454},
+    {"i": 9, "what": "清仓扫款", "amount": "0.0027", "from": "bidder B", "to": "user U1", "txid": "feea0b1d60be749c3d9a6e17f0ceeb96746166aa162782330410efe10523901c", "height": 3499454},
+    {"i": 10, "what": "清仓扫款", "amount": "0.0039", "from": "bidder A", "to": "user U1", "txid": "4441d21eccbc6db31815ece063cf217d830d1e35f24838acf0ad87d9cdfbe81f", "height": 3499462},
+    {"i": 11, "what": "清仓扫款（拍卖钱包全部余款）", "amount": "0.0175", "from": "lot/seller", "to": "user U1", "txid": "27e1379728d91e07a7f144693231148577d188a11a47e74ab1f851049df55d48", "height": 3499462},
+    {"i": 12, "what": "（实验：卖家往外发一笔带 memo 的钱，验证 memo 不可读）", "amount": "0.0005", "from": "lot/seller", "to": "lot/seller", "txid": "c13e2e4b73ae080a8d2f72d5c5f2db163bfdfe5d1e16d4d572bb0d0d6537ce36", "height": 3499418}
+  ]
+}

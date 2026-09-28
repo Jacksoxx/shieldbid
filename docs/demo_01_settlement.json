@@ -1,0 +1,55 @@
+{
+  "protocol": "SHIELDBID/1",
+  "auction_id": "DEMO-01",
+  "network": "mainnet",
+  "rule": "uniform price: every winner pays the lowest winning bid; overpayment refunded; losers refunded in full",
+  "reserve": "0.003",
+  "slots": 2,
+  "bids_received": 3,
+  "clearing_price": "0.009",
+  "escrow_in_lot_wallet": "0.02180000",
+  "escrow_bids_total": "0.025",
+  "payout_to_seller": "0.018",
+  "total_refund": "0.007",
+  "privacy_note": "public: number of bidders is NOT published; losers and their amounts are never revealed; only clearing price + winners' rank are",
+  "settlement": [
+    {
+      "rank": 1,
+      "bidder": "USER@Noir",
+      "amount": "0.012",
+      "result": "win",
+      "pays": "0.009",
+      "refund": "0.003",
+      "txid": "56bb6efa5a23841f2212211de3776f66a3231d28a230e831c0e9f6a05c715a40",
+      "commit": "2957ce935b84070963afb92a759a3b64671a8060f95249360f4d337b09953fba",
+      "salt": "e97cf06525e7a64e",
+      "refund_txid": "90d35aee94903166cbbd3ecbc9f24d96f0c7d38f6f4f37cd971d7c0a8a968cbe"
+    },
+    {
+      "rank": 2,
+      "bidder": "ROBOT-B",
+      "amount": "0.009",
+      "result": "win",
+      "pays": "0.009",
+      "refund": "0.000",
+      "txid": "91fefe4345372c4d70a85d3360430092be6ac8e21196bca0803a53862a575909",
+      "commit": "dcceee895de3cb44782534ba3ad8b0f1e90d6490dacdfd2dc71cc929545eae38",
+      "salt": "b61acf1318f0c258"
+    },
+    {
+      "rank": 3,
+      "bidder": "ROBOT-A",
+      "amount": "0.004",
+      "result": "lose",
+      "pays": "0",
+      "refund": "0.004",
+      "txid": "4f7926eeadc0dd281b5a010a00f75b08b1a29e8e4b82fd5990d227edf08fa22f",
+      "commit": "9d37caf2765b33fcb59d5bfeeb48d94c961615073c94eb3c570dac3387208e07",
+      "salt": "e21ac8dfb8c39b9d",
+      "refund_txid": "f29dbd244048653e2f69cd7bd494d0c79681501164164640a5bb53f3dc8d7b7d"
+    }
+  ],
+  "closed_utc": "2026-09-28T18:37:46Z",
+  "user_refund_address": "u19u8zep364jn2ndyudper0ud33n7gj0xnpv5k7hs2jhryv05n3cym6ql9q2wrwsczl33qj32ekz659ukca6cslwzxcu0drah8932azmdg2eg4jr20kk0ka3fh7uvv7hnv8rxx6dj7hcx23nvur8ae7dxhrt50l5psjmghzg5lsqhzvwwf",
+  "refund_note": "escrow sat in the lot wallet; every refund is a shielded payout from it. The user's phone wallet gets the overpayment, the losing robot gets its escrow back in its own demo wallet, then the wind-down sweep returns everything else to the user."
+}

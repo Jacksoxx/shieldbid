@@ -1,0 +1,12 @@
+{
+  "note": "refund/transfer legs that are already on chain, so the finisher never pays them twice",
+  "receipts": {
+    "USER@Noir": {
+      "amount": "0.003",
+      "txid": "90d35aee94903166cbbd3ecbc9f24d96f0c7d38f6f4f37cd971d7c0a8a968cbe",
+      "height": 3499452,
+      "what": "winner's overpayment: won at 0.012 but the uniform clearing price is 0.009",
+      "to": "user's shielded U1 in the Noir phone wallet"
+    }
+  }
+}
