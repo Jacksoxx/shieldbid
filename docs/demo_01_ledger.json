@@ -1,0 +1,23 @@
+{
+  "protocol": "SHIELDBID/1",
+  "auction_id": "DEMO-01",
+  "network": "mainnet",
+  "mechanism": "escrow-as-bid: the AMOUNT of a shielded z->z transfer is the bid; amounts are encrypted on-chain",
+  "reserve": "0.003",
+  "slots": 2,
+  "lot": "DEMO lot (non-deliverable): used to demonstrate the sealed-bid round end to end",
+  "settlement_rule": "uniform price: every winner pays the lowest winning bid; overpayment refunded; losers refunded in full",
+  "refund_address": "SEE ~/.shieldbid/buyer_u1_address.txt (private file, not in git)",
+  "bids": [
+    {
+      "bidder": "USER@Noir",
+      "amount": "0.012",
+      "txid": "56bb6efa5a23841f2212211de3776f66a3231d28a230e831c0e9f6a05c715a40",
+      "height": 3499413,
+      "time_utc": "2026-09-28T17:54:37",
+      "how": "sent by hand from the user's phone wallet (Noir), shielded pool, memo 'BID 0.012' (memo is decorative: amount carries the bid)",
+      "salt": "e97cf06525e7a64e",
+      "commit": "2957ce935b84070963afb92a759a3b64671a8060f95249360f4d337b09953fba"
+    }
+  ]
+}

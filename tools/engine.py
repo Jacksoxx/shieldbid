@@ -32,9 +32,15 @@ def url_for(net: str, port: int | None) -> str:
 def gql(url: str, query: str, variables: dict | None = None, timeout: int = 300) -> dict:
     body = json.dumps({"query": query, "variables": variables or {}}).encode()
     req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"})
+    if not isinstance(query, str):
+        query = str(query)
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
-    with opener.open(req, timeout=timeout) as r:
-        data = json.loads(r.read().decode("utf-8"))
+    try:
+        with opener.open(req, timeout=timeout) as r:
+            data = json.loads(r.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", "replace")
+        raise RuntimeError(f"HTTP {e.code} from engine: {body[:800]}") from None
     if "errors" in data:
         raise RuntimeError(json.dumps(data["errors"], ensure_ascii=False))
     return data["data"]
