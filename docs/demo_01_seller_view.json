@@ -1,0 +1,21 @@
+{
+  "what": "What the LOT (seller) wallet of DEMO-01 could read while the sealed round was live",
+  "why": "bid amounts are encrypted in the shielded pool: this view existed only inside the lot wallet. An explorer shows the transactions but not a single amount.",
+  "when": "captured at close, 2026-09-28T18:37:46Z (chain height 3,499,452), from tools/demo_01_finish.py",
+  "chain_height_when_read": 3499452,
+  "shielded_escrow_notes_read_by_the_seller": [
+    {"value": "0.0083", "pool": "orchard", "height": 3499452, "what": "change of the lot wallet after the overpayment refund"},
+    {"value": "0.004", "pool": "orchard", "height": 3499451, "what": "ROBOT-A's bid"},
+    {"value": "0.009", "pool": "orchard", "height": 3499451, "what": "ROBOT-B's bid"},
+    {"value": "0.0005", "pool": "orchard", "height": 3499418, "what": "the memo experiment leg (see HANDOFF: received-note memo reads back null)"}
+  ],
+  "total_in_the_lot_wallet_at_close": "0.0218",
+  "where_the_user_bid_went": "the user's 0.012 arrived as its own escrow note (txid 56bb6efa…, height 3,499,413) and was later spendable by the lot wallet in exactly the same way",
+  "what_was_public_all_along": [
+    "the lot address, and that *some* shielded transfers arrived at it",
+    "the txids, with 'shielded' as the only visible detail",
+    "nothing else: no amounts, no bidders, no count of bidders"
+  ],
+  "lot_wallet_balance_now": "0",
+  "note": "the lot wallet is empty now on purpose: the wind-down sweep returned every remaining satoshi to the user's shielded address (see docs/demo_01_money_trail.json, legs 8-11). A live re-read is therefore impossible - which is itself the point: the sealed data only ever lived inside the lot wallet."
+}

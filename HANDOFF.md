@@ -5,27 +5,27 @@
 
 ## 0. 现在到哪一步了
 
-> **⏰ LIVE STATE（2026-09-29 02:30 北京）— 接手前先读这段，确认"有没有在跑"**
-> - **M4 真钱轮次正在跑**，全部由 `tools/demo_01_run.py` 驱动：
->   `status` / `fund --amount` / `bid --account N --amount X --bidder NAME` / `close` / `refund --leg winners|losers|sweep`
-> - 已上链（链高 ≈3,499,450）：**三笔出价全部落链**
->   ① 用户出价 **0.012** → 卖家钱包 `56bb6efa5a23…`, h=3499413
->   ② 用户注资 **0.02** → 投标人A `5c60b3448db4…`, h=3499430
->   ③ 拨给投标人B **0.012** `a14355bf9522…`（同一笔还带回找零 0.0079 给 A）
->   ④ 🤖 ROBOT-B 出价 **0.009** → 卖家 `91fefe434537…`
->   ⑤ 🤖 ROBOT-A 出价 **0.004** → 卖家 `4f7926eeadc0…`
-- 记账：`docs/demo_01_ledger.json`（出价回执+commit/salt）、`docs/demo_01_settlement.json`（揭标结果：**清算价 0.009，名额 2**）
-- **揭标已完成（2026-09-28 18:37 UTC）**：清算价 **0.009 ZEC**（统一价，名额 2）。名次
-  ① USER@Noir 0.012 → 中标，只付 0.009，退 0.003；② ROBOT-B 0.009 → 中标，正好；③ ROBOT-A 0.004 → 落标，全额退 0.004。
-- **退款腿**：用户多付 **0.003 → U1**（txid `90d35aee9490…`, h=3499452，已记账在 `docs/demo_01_refund_receipts.json`）；
-  落标者 **0.004 → 投标人A**（txid `f29dbd244048…`）。收款腿：`0.0036`（账户2）、`0.0027`（账户3）已扫回 U1。
-- **收尾脚本**：`python tools/demo_01_finish.py`（可重复跑；等确认→揭标→退款→清空扫款回用户 U1；扫款是多轮循环，
-  因为退款腿在上一轮同步时还在 mempool，下一轮才会以"多出来的 note"出现），日志 `docs/demo_01_finish2.log`
-- **⚠️ 接手红线**：先 `python tools/demo_01_run.py status` + 读 ledger 与 **`docs/demo_01_settlement.json` + `docs/demo_01_refund_receipts.json`**，
-  **哪一步已有 txid 就绝不重发**。链上是真钱，重复出价/重复退款=白花钱。扫款段是按余额驱动的，天然幂等。
-- **⚠️ 大坑 #3（2026-09-29 发现）**：付款前**必须**先 `synchronizeAccount`，否则钱包还拿着「刚被自己花掉的那张 note」
-  去选币，节点报 `failed to validate tx … could not contextually validate`（同一钱包前几秒刚广播过付款时必现）。
-  修法：`demo_01_run.pay()` 现在**每次尝试前都 sync**，所以重试循环能自愈。
+> **⏰ LIVE STATE（2026-09-29 03:00 北京）— 接手前先读这段，确认"有没有在跑"**
+> - **M4 真钱轮次已完成（DEMO-01 全流程跑通）。** 战报：`docs/DEMO_01_REPORT.md`（含 12 笔链上腿表 + 诚实局限）。
+>   机器可读：`docs/demo_01_settlement.json`（揭标）、`docs/demo_01_money_trail.json`（钱流）、
+>   `docs/demo_01_transactions.json`（引擎读回的账户流水）、`docs/demo_01_seller_view.json`（卖家视角读了什么）。
+>   图：`docs/demo01_result.png`（最终结果卡）、`docs/demo01_status.png`（出价期状态卡）。
+> - **没有任何 demo 钱包还留着钱**（余额 0，只剩 0.0001×2 的灰尘）；**没有在跑的后台进程**（收尾器跑完即退）。
+> - 驱动脚本：`tools/demo_01_run.py`（`status` / `fund` / `bid` / `close` / `refund`）+ `tools/demo_01_finish.py`（收尾）。
+> - 12 笔腿全部上链（链高 3,499,413 → 3,499,462），逐笔见 `docs/DEMO_01_REPORT.md` 表格；
+>   钱的口径：**进去 0.032，回来 0.0307，链上手续费 ≈0.001 ZEC（≈$1.5）**。
+> - 记账：`docs/demo_01_ledger.json`（出价回执+commit/salt）、`docs/demo_01_settlement.json`（揭标结果：**清算价 0.009，名额 2**）
+> - **揭标已完成（2026-09-28 18:37 UTC）**：清算价 **0.009 ZEC**（统一价，名额 2）。名次
+>   ① USER@Noir 0.012 → 中标，只付 0.009，退 0.003；② ROBOT-B 0.009 → 中标，正好；③ ROBOT-A 0.004 → 落标，全额退 0.004。
+> - **退款/扫款腿**：用户多付 0.003 → U1（`90d35aee9490…`）；落标者 0.004 → 投标人A（`f29dbd244048…`）；
+>   扫款回 U1 四笔：`0.0036`/`0.0027`/`0.0039`/`0.0175`（txid 见 `docs/demo_01_money_trail.json`）。
+> - **⏭️ 下一步 = M5**：录 2 分钟 demo（用 `docs/demo01_result.png` + 引擎"卖家视角"截图）→ 写提交材料
+>   （名字/赛道 PRIVATE MARKETS/描述/repo/demo 链接）→ **最后一步「提交」按钮由用户自己点**（10/28 23:59 UTC 截止）。
+> - **⚠️ 接手红线**：先 `python tools/demo_01_run.py status` + 读 ledger 与 **`docs/demo_01_settlement.json` + `docs/demo_01_refund_receipts.json`**，
+>  **哪一步已有 txid 就绝不重发**。链上是真钱，重复出价/重复退款=白花钱。扫款段是按余额驱动的，天然幂等。
+> - **⚠️ 大坑 #3（2026-09-29 发现）**：付款前**必须**先 `synchronizeAccount`，否则钱包还拿着「刚被自己花掉的那张 note」
+>  去选币，节点报 `failed to validate tx … could not contextually validate`（同一钱包前几秒刚广播过付款时必现）。
+>  修法：`demo_01_run.pay()` 现在**每次尝试前都 sync**，所以重试循环能自愈。
 > - **⚠️ 大坑 #1（已解决，别踩回去）**：`pay` 的 `confirmations` 默认≈10，新到账的钱要等 ~10 确认才可花，
 >   否则报 `No feasible note selection found`。修法：payment 里显式 `"confirmations": 1`。
 > - **⚠️ 大坑 #2（2026-09-29 找到真凶）**：**绝对不要传 `srcPools`**。mutation 把它声明成标量 `Int`，
