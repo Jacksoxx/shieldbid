@@ -1,80 +1,98 @@
-# 暗标行动 · HANDOFF
+# 🤫 暗标 · ShieldBid — HANDOFF（交接文件）
 
-> **用法**：新会话第一句话发「**暗标 继续**」，我先读这个文件再开工。
-> 最后更新：2026-09-29（M1 完成）
+> **口令：新会话发「暗标 继续」→ 助手的第一个动作是读这份文件。**
+> 代号「暗标」，产品名 ShieldBid，赛道 PRIVATE MARKETS，截止 **2026-10-28 23:59 UTC**。
 
-## 0. 这是什么
+## 0. 现在到哪一步了
 
-用户（松松，Qihao Xiao，X 大号 JACKSOxx，**完全不懂代码**）参加 **ZECATHON**（Zcash 隐私黑客松，$10 万奖金池）的参赛作品。
-赛道：**PRIVATE MARKETS**。作品：**ShieldBid —— 密封竞价台**。
+- ✅ **M1** 协议规格 + 公开竞价台页面 + 投标人指南 + git 仓库
+- ✅ **M2（本轮完成）** 本地 Zcash 引擎跑通：
+  - WSL 装好（`shieldbid` 发行版），绕过商店版无法启动的坑（见 `docs/ENGINE_SETUP.md`）
+  - `zkool_graphql` 引擎主网(8000)+测试网(8001)在跑，连公共节点
+  - **卖家主网钱包**已建（账户 1），拿到 orchard 收款地址
+  - **测试网卖家钱包**已建（测试网账户 1）
+  - Windows ↔ WSL 打通：`python tools/engine.py` 能直接读链高/账户/地址/余额
+  - **验证了核心机制**：memo 能从 `notesByAccount` 直接解密读出（出价就是 memo）
+  - 投标路径 dry-run 通过（带 memo 的屏蔽付款请求成形）
+- ⏭️ **M3 下一步**：测试网发一笔真 memo → 卖家读到 → 揭标 CLI 用真数据跑；然后主网一笔真钱出价
 
-- 截标：**2026-10-28 23:59 UTC**
-- 提交账号：站点 handle **@JACKSOxx**（Google 登录 **xiaoqihao2@gmail.com**，姓名 Qihao Xiao，Telegram @jacksoxx，国家 China）
-- 站点：https://thezecathon.com/ （注册已完成，赛道未选，提交时才勾）
-- 分工：**代码/部署/文档/demo 全部由助手做**，用户只做：注册（已完成）、demo 时当一次出价人、10/28 点提交。
-- 红线：不连钱包、不签名、不点 claim；私钥不进聊天；助手不碰用户密码。
+## 1. 卖家收款地址（拍卖地址）
 
-## 1. 一句话产品
-
-出价 = 一笔**屏蔽（z→z）转账 + memo 里写 `BID 1.55`**。金额只有卖家能读；
-截止后卖家**只公布清算价和名次**，输家的金额和身份永不公开；截止时对全部封标做哈希承诺，防赖皮。
-
-**为什么是这个**：主办方自己的市场把报价全公开（实测 `/bids` 16 条公开报价共 22.71 ZEC ≈ $34,928），
-而且他们那场"盲拍"官方原话是"截止前可随时查看或提高出价"、有玩家原话"连续分析了别人出价 7 小时后才提交"。
-他们的赛道原话就是 *sealed-bid auctions … price should be public and the participants should not*。
-→ 我们是**补他们的洞，不是另开一个市场**（不撞车、不违反"existing products are not"规则）。
-
-## 2. 技术脊柱（都已核实到源码级，别重新怀疑）
-
-| 事实 | 证据 |
+| 网络 | 地址 |
 |---|---|
-| memo **只能**挂 z→z 屏蔽转账，上限 **512 字节**；往透明地址发 memo 会被拒 | Zallet 源码 `MAX_MEMO_BYTES = 512`、`Cannot send memo to transparent recipient` |
-| 卖家读金额路径 A（官方换代栈）| Zallet RPC `z_listunspent` 每条返回 **`memoStr`**（`list_unspent.rs`）；`z_viewtransaction` 同样带 memo |
-| 卖家读金额路径 B（本机可跑，**Windows 友好**）| Zkool GraphQL：`Transaction.outputs { pool vout value address memo }`（`rust/src/graphql/query.rs`）；发款 `pay(recipients:[{address,amount,memo}])` |
-| 本机环境 | 有 python/git；**无 Docker、无 WSL 发行版、无 Rust**。Zallet 只发 Linux 二进制 → 本机走 Zkool 轻客户端（连公共 lightwalletd，**不需要全节点**） |
-| 公共 lightwalletd | `zec.rocks` / `na.lightwalletd.com` / `eu.lightwalletd.com` / `mainnet.lightwalletd.com` TCP 443 全通 |
-| 出价人门槛 | ✅ Zashi / Zkool / Ywallet / Zingo（有备注栏）；❌ 交易所提币、OKX Web3 钱包（无备注栏） |
+| 主网 orchard | `u1s8xflwcl60d0ck2z028duyrfh5zr0tufjq07skymr9u64j6fd2s2dg2l854puzlq0vwy4xutwp2exph6hvtxw9ukaqpwfswdvgq26ksf` |
+| 测试网 orchard | `utest1ypl0gg5kgzvec8zfnylrz89xk70h3nlplwjwlx68qcapepkt3c2f0fntyzwf69czx5eu6dqzshy6vl20kd97x05gm8glyyg8cv7shxz4` |
 
-**诚实局限（必须写进 README，别美化）**：卖家仍是可信方；实时最高价做不到（金额加密）；NFT/资产交割不在范围内。
+- 主网钱包助记词：WSL 里 `/root/.sb_seller_mnemonic`（chmod 600，**不打印不进 git**）
+- 测试网钱包助记词：`/root/.sb_test_seller_mnemonic`
+- 钱包库：`/root/sb_main.db`、`/root/sb_test.db`
+- 助记词是**唯一**能拿回钱的东西 → 只存在 WSL 本地，不要往聊天里贴、不要提交到仓库
 
-## 3. 目录与产物
+## 2. 环境怎么恢复（电脑重启后）
 
-- 仓库：`C:\Users\XiaoSS\shieldbid`（git 已初始化，M1 已提交 `97765bb`）
-  - `README.md`、`LICENSE`(MIT)、`.gitignore`
-  - `docs/SPEC.md` —— 协议 v0.1（memo 格式、承诺公式、reveal.json schema、验算步骤、威胁模型）
-  - `docs/BIDDER_GUIDE.md` —— 出价人教程（截图待补）
-  - `web/index.html` —— 竞价台（单文件、暗色、可直接上 GitHub Pages）
-  - `docs/board_v0.png` —— M1 页面截图
-- 方案书：`C:\Users\XiaoSS\snowmoon\zecathon\PLAN_v1.md`
-- 注册取证：`C:\Users\XiaoSS\snowmoon\zecathon\site_pages_logged_in.txt`
+```bash
+bash ~/shieldbid/tools/engine_up.sh          # 两个引擎都起来（已在跑就跳过）
+cd ~/shieldbid && python tools/engine.py height --net mainnet
+```
 
-## 4. 里程碑（用户要求：到点提醒他开新会话）
+引擎挂了看：`wsl -d shieldbid -u root -- bash -lc "tail -20 /root/engine.log"`
 
-| # | 内容 | 状态 |
+完整原理、坑、GraphQL 速查表都在 **`docs/ENGINE_SETUP.md`**（这份必读）。
+
+## 3. 工具现状
+
+| 文件 | 作用 | 状态 |
 |---|---|---|
-| M1 | 仓库 + 协议 v0.1 + 竞价台页面 + 出价人教程 | ✅ 2026-09-29 |
-| M2 | **真钱包发真 memo → 卖家读到**（主网极小金额或测试网，先跑通再谈自动化）| ⬜ 下一步 |
-| M3 | 揭标 CLI `tools/shieldbid.py`（引擎：zkool / manual 两种）+ 承诺哈希 + 排名/退款清单 | ⬜ |
-| M4 | `tools/verify_reveal.py` + 页面上线（GitHub Pages）+ README 收尾 | ⬜ |
-| M5 | 2 分钟 demo 视频 + 找外人按教程复测 | ⬜ |
-| M6 | 10/28 用户点提交（内容全部备好） | ⬜ |
+| `tools/engine.py` | 引擎 CLI：height/accounts/addresses/balance/sync/notes/bids/bid | ✅ 可用 |
+| `tools/shieldbid.py` | 卖家侧拍卖逻辑：init/ingest/commit/reveal/verify/demo | ✅ 逻辑通过，读取已改接真 schema |
+| `tools/engine_up.sh` | 一键拉起引擎 | ✅ |
+| `web/index.html` | 公开竞价台（暗色） | ✅ |
+| `docs/SPEC.md` | 协议规格（含诚实局限） | ✅ |
+| `docs/BIDDER_GUIDE.md` | 投标人傻瓜教程 | ✅ |
+| `docs/zkool_graphql_schema_full.json` | 实测 API 全量 schema | ✅ |
 
-## 5. 下一步（M2 具体动作）
+## 4. 核心命令（记这三条就够）
 
-1. 装 `zkool_graphql` 引擎（Linux 二进制 → 需要 WSL 或最便宜的小服务器；**动系统前先问用户**）。
-   - 备选：Zkool 桌面版（Windows .exe）人工看 memo —— 不装任何东西，但揭标不自动。
-2. 卖家侧建一个**新钱包**（专用于本作品），拿到 UA，写进 `web/index.html` 的 lot 数据。
-3. 用户手机装 Zashi（或 Zkool），发一笔极小金额带 `BID x` 的 memo 到那个 UA。
-4. 用引擎读出 memo → 落盘截图/日志 → M2 完成。
-5. demo 资金：**优先测试网**；要真钱就 0.01 ZEC 级（≈$15），用户拍板。
+```bash
+# 卖家：看收款地址
+python tools/engine.py addresses --net mainnet --account 1
 
-## 6. 花的钱与额度
+# 投标人：投一个密封报价（0.01 ZEC 金额 + BID 1.5 出价写进 memo）
+python tools/engine.py bid --net mainnet --account 2 \
+    --to <卖家地址> --amount 0.01 --memo "BID 1.5"
 
-- 项目本身：**0 元**（测试网或几分钱手续费）。
-- AI token：b.ai 余额 14,008,927 积分（9/29 查），本月已用 991,073。整套项目估 100 万–300 万积分。
-- **省 token 铁律**：每完成一个里程碑就开新会话（上下文从 10 万降到 1.5 万 ≈ 省 85%）；长文档写文件不刷屏；大文件用脚本读、只回看关键行。
+# 卖家：同步 + 读出所有出价
+python tools/engine.py sync --net mainnet --account 1 --balance
+python tools/engine.py bids --net mainnet --account 1 --json
+```
 
-## 7. 浏览器（做任何网页操作时）
+## 5. 铁律（踩过才知道）
 
-fx profile 调试浏览器 `http://127.0.0.1:9223`（X 已登录 @JAcksoxx_x；Google 已登录 xiaoqihao2@gmail.com；chat.b.ai 已登录）。
-挂了用 `python ~/AppData/Local/hermes/scripts/start_fx_browser.py` 重启。**绝不另开新 Chrome**。用完随手关标签。
+1. **loopback 请求绕开代理**：curl 加 `--noproxy '*'`，Python 用 `ProxyHandler({})`。
+   否则请求被丢到 7897 代理 → 假的 **HTTP 502**，看起来像引擎挂了。
+2. **不要在 WSL 里给 8000 加 iptables `! -i lo` 那条**，镜像模式下会把自己也挡住。
+3. **引擎 API 无鉴权**（能读出助记词）：只许本机 loopback，永不公网。
+4. 从 git-bash 里给 WSL 传命令时，`\$var` 会被吞掉 → **一律写脚本文件再 `bash file.sh`**。
+5. 写进 WSL 的脚本要先 `sed -i 's/\r$//'` 去掉 CRLF。
+6. 引擎日志里 `no authentication` 是预期警告，不是错误。
+
+## 6. 还没解决 / 下一轮要干
+
+1. **测试网拿币**：要找 Zcash 测试网水龙头（zecfaucet.com 是 JS 页面，没探到 API）。
+   备选：主网真钱（0.01–0.03 ZEC，≈$15–45）直接跑，更省事但花钱。
+2. **真 memo 端到端**：测试网或主网，让"投标人钱包 → 卖家地址 + memo → 卖家读出"跑一次真交易。
+3. 揭标 CLI 用**真实**数据跑（`shieldbid.py reveal`），加哈希承诺。
+   - ⚠️ 遗留：`verify` 的篡改测试目前测不出「卖家改了公布金额」——因为金额本身加密，
+     第三方**不可能**验算（这是隐私的代价，不是 bug）。要做的是加**出价人自查**
+     （投标人拿自己的 memo 原文核对：是否在名单里 + 公布金额是否与自己的 memo 一致），
+     并在 SPEC 写明这条诚实局限。
+4. 录 2 分钟 demo 视频（需要用户配合：手机装 Zashi/Zkool、出一次价）。
+5. README 定稿（含 `docs/zilkroad_bids_evidence.png` 证据图、诚实局限一节）。
+6. 提交：thezecathon.com → SUBMIT PROJECT（名字/赛道/repo/demo 链接），用户点提交。
+
+## 7. 定位一句话（对外口径）
+
+> Zilkroad 的 `/bids` 把出价**摊在桌面上**（金额、总额、均价人人可见）；
+> ShieldBid 用 Zcash 屏蔽转账 + 加密 memo，把同一件事**锁进密室**：
+> 只有卖家看得到金额，截止后只公布清算价与名次，输家的金额和身份永不公开。
+> 不是另做一个拍卖站，是给市场补上缺的那一层隐私。

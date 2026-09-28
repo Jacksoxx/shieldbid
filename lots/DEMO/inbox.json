@@ -1,0 +1,42 @@
+{
+  "schema": "shieldbid/inbox/1",
+  "lot": "DEMO",
+  "bids": [
+    {
+      "txid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "height": 26123300,
+      "memo_sha256": "7f2aab97b2719751959a36fec6722facd2f0b04e0530015604fb2124ec613cde",
+      "amount_zec": "1.55",
+      "nonce": null
+    },
+    {
+      "txid": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "height": 26123310,
+      "memo_sha256": "74b533d2ff8c7356e8b0022dd88989c7e679dd2bfc8c091523a2b02e67b24812",
+      "amount_zec": "1.42",
+      "nonce": "f3a91c"
+    },
+    {
+      "txid": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "height": 26123320,
+      "memo_sha256": "108b0b669e0e6d77e3d87f8cb30bf05ea76e55702cef5e70e47c5c4b76855df1",
+      "amount_zec": "1.05",
+      "nonce": null
+    },
+    {
+      "txid": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "height": 26123400,
+      "memo_sha256": "7056697b25535796632eeb1dbba35c110b501eea3c11b61512dd37dd5c9fd656",
+      "amount_zec": "2",
+      "nonce": null
+    }
+  ],
+  "rejects": [
+    {
+      "txid": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "height": 26123330,
+      "memo_sha256": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+      "invalid_reason": "no BID <amount> token"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "schema": "shieldbid/reveal/1",
+  "lot": "DEMO",
+  "item": "zkSNARKs #9631",
+  "address": "u1demo00000000000000000000000000000000000000000000000000",
+  "reserve_zec": "1.20",
+  "deadline": "2026-10-05T18:00:00Z",
+  "deadline_height": 26123456,
+  "commitment": "sha256:4af07565adf0ef599143aafa4c590e21cb884bcee43990db0879d77e8b2567ed",
+  "clearing_zec": "2",
+  "winners": 1,
+  "received": [
+    {
+      "txid": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "memo_sha256": "7056697b25535796632eeb1dbba35c110b501eea3c11b61512dd37dd5c9fd656",
+      "amount_zec": "2",
+      "status": "winner",
+      "height": 26123400
+    },
+    {
+      "txid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "memo_sha256": "7f2aab97b2719751959a36fec6722facd2f0b04e0530015604fb2124ec613cde",
+      "amount_zec": "1.50",
+      "status": "refunded",
+      "height": 26123300
+    },
+    {
+      "txid": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "memo_sha256": "74b533d2ff8c7356e8b0022dd88989c7e679dd2bfc8c091523a2b02e67b24812",
+      "amount_zec": "1.42",
+      "status": "refunded",
+      "height": 26123310
+    },
+    {
+      "txid": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "memo_sha256": "108b0b669e0e6d77e3d87f8cb30bf05ea76e55702cef5e70e47c5c4b76855df1",
+      "amount_zec": "1.05",
+      "status": "below_reserve",
+      "height": 26123320
+    }
+  ],
+  "refunds": [
+    {
+      "txid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "amount_zec": "1.55",
+      "kind": "outbid_refund"
+    },
+    {
+      "txid": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "amount_zec": "1.42",
+      "kind": "outbid_refund"
+    },
+    {
+      "txid": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "amount_zec": "1.05",
+      "kind": "below_reserve_refund"
+    },
+    {
+      "txid": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "amount_zec": null,
+      "kind": "invalid_memo_refund"
+    }
+  ],
+  "note": "losers are listed only because their funds must be returned; no identity, handle or address is attached to any bid by this protocol"
+}

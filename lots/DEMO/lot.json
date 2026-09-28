@@ -1,0 +1,12 @@
+{
+  "schema": "shieldbid/lot/1",
+  "lot": "DEMO",
+  "item": "zkSNARKs #9631",
+  "seller": "@JACKSOxx",
+  "address": "u1demo00000000000000000000000000000000000000000000000000",
+  "reserve_zec": "1.20",
+  "deadline": "2026-10-05T18:00:00Z",
+  "deadline_height": 26123456,
+  "winners": 1,
+  "seed": "demo"
+}
