@@ -1,0 +1,22 @@
+{
+  "protocol": "SHIELDBID/1",
+  "auction_id": "DEMO-01",
+  "network": "mainnet",
+  "created": "2026-09-29",
+  "lot": "ZECATHON demo lot (non-deliverable: escrow is refunded after settlement)",
+  "reserve_price_zec": "0.003",
+  "slots": 2,
+  "settlement_rule": "uniform-price: every winner pays the lowest winning bid",
+  "bid_format": "memo = 'BID <amount>' attached to a shielded (z->z) payment; amount sent = escrow",
+  "bidder_count_expected": 3,
+  "lifecycle": ["OPEN", "CLOSED (commitment hash published)", "REVEALED (winner list + clearing price)", "SETTLED (losers refunded)"],
+  "privacy_claims": {
+    "hidden": ["each bid amount", "each bidder identity", "who lost and by how much", "number of bidders before close"],
+    "public": ["reserve price", "number of slots", "clearing price after reveal", "winner count", "the commitment hash"]
+  },
+  "honest_limits": [
+    "the seller learns every amount once revealed - a malicious seller could front-run or leak",
+    "a third party cannot verify that a published clearing price matches the sealed bids",
+    "no live 'current highest bid' is possible: amounts are encrypted to the seller only"
+  ]
+}
