@@ -8,16 +8,25 @@
 > **⏰ LIVE STATE（2026-09-29 02:30 北京）— 接手前先读这段，确认"有没有在跑"**
 > - **M4 真钱轮次正在跑**，全部由 `tools/demo_01_run.py` 驱动：
 >   `status` / `fund --amount` / `bid --account N --amount X --bidder NAME` / `close` / `refund --leg winners|losers|sweep`
-> - 已上链（链高 ≈3,499,43x）：
+> - 已上链（链高 ≈3,499,450）：**三笔出价全部落链**
 >   ① 用户出价 **0.012** → 卖家钱包 `56bb6efa5a23…`, h=3499413
 >   ② 用户注资 **0.02** → 投标人A `5c60b3448db4…`, h=3499430
->   ③ 拨给投标人B **0.012** `a14355bf9522…`
+>   ③ 拨给投标人B **0.012** `a14355bf9522…`（同一笔还带回找零 0.0079 给 A）
+>   ④ 🤖 ROBOT-B 出价 **0.009** → 卖家 `91fefe434537…`
+>   ⑤ 🤖 ROBOT-A 出价 **0.004** → 卖家 `4f7926eeadc0…`
 > - 记账：`docs/demo_01_ledger.json`（出价回执+commit/salt）、`docs/demo_01_settlement.json`（揭标结果）
+> - **收尾脚本**：`python tools/demo_01_finish.py`（可重复跑；等确认→揭标→退款→清仓扫款回用户 U1），日志 `docs/demo_01_finish.log`
 > - **⚠️ 接手红线**：先 `python tools/demo_01_run.py status` + 读 ledger，**哪一步已有 txid 就绝不重发**。链上是真钱，重复出价=白花钱。
-> - **⚠️ 大坑（已解决，别踩回去）**：`pay` 的 `confirmations` 默认≈10，新到账的钱要等 ~10 确认才可花，否则一直报
->   `No feasible note selection found`。修法：payment 里显式 `"confirmations": 1`（见 `tools/demo_01_run.py` 的 `pay()`）。`srcPools` 是 **Int**（3=orchard）。
+> - **⚠️ 大坑 #1（已解决，别踩回去）**：`pay` 的 `confirmations` 默认≈10，新到账的钱要等 ~10 确认才可花，
+>   否则报 `No feasible note selection found`。修法：payment 里显式 `"confirmations": 1`。
+> - **⚠️ 大坑 #2（2026-09-29 找到真凶）**：**绝对不要传 `srcPools`**。mutation 把它声明成标量 `Int`，
+>   但任何显式取值（包括 3）都会让引擎的选笔记找不到可用 note，同样报 `No feasible note selection found`，
+>   白白卡了 11 次重试。传 `[3]` 直接报类型错（`Expected input scalar Int`）。**正解 = 省略该字段**，
+>   让引擎自选；demo 里所有钱都在 orchard，选出来依然是屏蔽的。
 > - **⚠️ 协议已改（关键）**：备注读不出来 —— 收到的 orchard note `memo` 恒为 `null`，`memosByTransaction` 返回 `[]`。
 >   → 出价改为 **金额即出价（escrow-as-bid）**：打多少钱=出多少钱，金额在链上加密；memo 只是装饰（Noir 里可留空）。
+> - **电源已加固（2026-09-29 02:45）**：平衡方案下 AC 的睡眠/休眠/硬盘/显示器/无人值守全设「从不」，
+>   混合睡眠关、网卡省电关；`powercfg -requests` 无阻塞项；WSL `shieldbid` Running。跑批不会因本机休眠中断。
 
 - ✅ **M1** 协议规格 + 公开竞价台页面 + 投标人指南 + git 仓库
 - ✅ **M2（本轮完成）** 本地 Zcash 引擎跑通：

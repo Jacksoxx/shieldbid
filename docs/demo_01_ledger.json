@@ -18,6 +18,24 @@
       "how": "sent by hand from the user's phone wallet (Noir), shielded pool, memo 'BID 0.012' (memo is decorative: amount carries the bid)",
       "salt": "e97cf06525e7a64e",
       "commit": "2957ce935b84070963afb92a759a3b64671a8060f95249360f4d337b09953fba"
+    },
+    {
+      "bidder": "ROBOT-B",
+      "amount": "0.009",
+      "txid": "91fefe4345372c4d70a85d3360430092be6ac8e21196bca0803a53862a575909",
+      "height": 3499450,
+      "how": "shielded z->z transfer from demo wallet account 3 (no memo)",
+      "salt": "b61acf1318f0c258",
+      "commit": "dcceee895de3cb44782534ba3ad8b0f1e90d6490dacdfd2dc71cc929545eae38"
+    },
+    {
+      "bidder": "ROBOT-A",
+      "amount": "0.004",
+      "txid": "4f7926eeadc0dd281b5a010a00f75b08b1a29e8e4b82fd5990d227edf08fa22f",
+      "height": 3499450,
+      "how": "shielded z->z transfer from demo wallet account 2 (no memo)",
+      "salt": "e21ac8dfb8c39b9d",
+      "commit": "9d37caf2765b33fcb59d5bfeeb48d94c961615073c94eb3c570dac3387208e07"
     }
   ]
 }

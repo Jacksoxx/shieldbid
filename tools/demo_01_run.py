@@ -71,8 +71,14 @@ def pay(account: int, to: str, amount: Decimal | str, memo: str | None = None) -
     rec: dict = {"address": to, "amount": str(Decimal(str(amount)))}
     if memo:
         rec["memo"] = memo
-    payment = {"recipients": [rec], "srcPools": 3,
-               "confirmations": 1}  # 3 = orchard pool; 1 conf = spend notes from the tip (engine default needs ~10)
+    # NOTE (2026-09-29): do NOT pass `srcPools`. The mutation types it as a scalar Int, and any
+    # explicit value (3 included) makes the engine answer `No feasible note selection found`
+    # because its note-selection then looks in a pool this wallet has no notes in. Omitting it
+    # lets the engine pick from the pools we actually hold (orchard). Every funded demo note is
+    # orchard, so the chosen - and the resulting output - stay shielded.
+    # Also: `confirmations: 1` is required, the engine default is ~10 and then refuses to spend
+    # a freshly received note ("No feasible note selection found" again).
+    payment = {"recipients": [rec], "confirmations": 1}
     return engine.gql(url(), engine.M_PAY, {"a": account, "p": payment}, timeout=600)["pay"]
 
 
