@@ -60,12 +60,25 @@ def newest_notes(account: int) -> tuple[int, int, int]:
 
 
 def wait_confirmed(account: int, rounds: int = 40, sleep: int = 20) -> bool:
-    """Wait until the wallet's newest note has at least one confirmation."""
+    """Wait until the wallet's newest note has at least one confirmation.
+
+    An account that holds no notes at all can never satisfy this, so bail out at once:
+    after the wind-down sweep the lot wallet is empty and waiting 30 rounds for it (the
+    first version did) just burns ten minutes of nothing.
+    """
+    empty_rounds = 0
     for _ in range(rounds):
         cnt, best, tip = newest_notes(account)
         log(f"    acct {account}: {cnt} note(s), newest h={best}, chain={tip}")
-        if cnt and tip - best >= 1:
-            return True
+        if cnt == 0:
+            empty_rounds += 1
+            if empty_rounds >= 2:
+                log(f"    acct {account}: no notes at all - nothing to spend, stopping the wait")
+                return False
+        else:
+            empty_rounds = 0
+            if tip - best >= 1:
+                return True
         time.sleep(sleep)
     return False
 
