@@ -14,14 +14,23 @@
   - Windows ↔ WSL 打通：`python tools/engine.py` 能直接读链高/账户/地址/余额
   - **验证了核心机制**：memo 能从 `notesByAccount` 直接解密读出（出价就是 memo）
   - 投标路径 dry-run 通过（带 memo 的屏蔽付款请求成形）
-- ⏭️ **M3 下一步**：测试网发一笔真 memo → 卖家读到 → 揭标 CLI 用真数据跑；然后主网一笔真钱出价
+- ✅ **M3（本轮完成）** 投标人钱包就位 + 收款口可用了：
+  - **主网投标人**：账户 2「SB Bidder A」→ 透明收款 `t1Pm2n2YGULXbZcgXAH3aCsY9mvTNZyD2dB`，
+    orchard `u1e6cwevnrssknku3jncgn59jwuztnz9asckcmv0x6ndtcyxesfet5q7djy7n3a06u0trdwchpgs2qqgw086747j7kzlug6yqh0vpjpgyj`
+  - **测试网投标人**：账户 2「SB Bidder Test」（tmUQNLuKA95bHgBvuXZ3PyJGmdqoLK8Fz6c）
+  - `engine.py` 新增 `newaccount`（本地生成 24 词助记词 → `~/.shieldbid/<name>.mnemonic`，chmod 600）
+    与 `shield`（透明 → 自己 orchard，一次性屏蔽，交易所提币进来的第一步）
+  - 助记词文件在 **Windows** `C:\Users\XiaoSS\.shieldbid\`（.gitignore 之外，绝不入库）
+- ⏭️ **M4（下一步）**：用户转 ~0.02 ZEC 到投标人地址 → 屏蔽 → 发 3 笔**真** memo 出价 → 卖家读出 → 揭标 → 录 demo
 
 ## 1. 卖家收款地址（拍卖地址）
 
 | 网络 | 地址 |
 |---|---|
-| 主网 orchard | `u1s8xflwcl60d0ck2z028duyrfh5zr0tufjq07skymr9u64j6fd2s2dg2l854puzlq0vwy4xutwp2exph6hvtxw9ukaqpwfswdvgq26ksf` |
-| 测试网 orchard | `utest1ypl0gg5kgzvec8zfnylrz89xk70h3nlplwjwlx68qcapepkt3c2f0fntyzwf69czx5eu6dqzshy6vl20kd97x05gm8glyyg8cv7shxz4` |
+| 主网 orchard（卖家收款） | `u1s8xflwcl60d0ck2z028duyrfh5zr0tufjq07skymr9u64j6fd2s2dg2l854puzlq0vwy4xutwp2exph6hvtxw9ukaqpwfswdvgq26ksf` |
+| 测试网 orchard（卖家收款） | `utest1ypl0gg5kgzvec8zfnylrz89xk70h3nlplwjwlx68qcapepkt3c2f0fntyzwf69czx5eu6dqzshy6vl20kd97x05gm8glyyg8cv7shxz4` |
+| 主网投标人（注资口，t→自屏蔽） | `t1Pm2n2YGULXbZcgXAH3aCsY9mvTNZyD2dB` |
+| 主网投标人 orchard | `u1e6cwevnrssknku3jncgn59jwuztnz9asckcmv0x6ndtcyxesfet5q7djy7n3a06u0trdwchpgs2qqgw086747j7kzlug6yqh0vpjpgyj` |
 
 - 主网钱包助记词：WSL 里 `/root/.sb_seller_mnemonic`（chmod 600，**不打印不进 git**）
 - 测试网钱包助记词：`/root/.sb_test_seller_mnemonic`
