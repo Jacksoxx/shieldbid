@@ -21,7 +21,8 @@
   - `engine.py` 新增 `newaccount`（本地生成 24 词助记词 → `~/.shieldbid/<name>.mnemonic`，chmod 600）
     与 `shield`（透明 → 自己 orchard，一次性屏蔽，交易所提币进来的第一步）
   - 助记词文件在 **Windows** `C:\Users\XiaoSS\.shieldbid\`（.gitignore 之外，绝不入库）
-- ⏭️ **M4（下一步）**：用户转 ~0.02 ZEC 到投标人地址 → 屏蔽 → 发 3 笔**真** memo 出价 → 卖家读出 → 揭标 → 录 demo
+- ⏭️ **M4（下一步）**：用户从 **Noir 手机钱包**（余额在 U1 统一地址）直接 z→z 转 ~0.02 ZEC 到投标人 orchard 地址
+  `u1e6cwevn…vpjpgyj` → 建投标人账户 3 → 发 3 笔**真** memo 出价（Noir 若支持备注则用户自己出一价）→ 卖家读出 → 揭标 → 录 demo
 
 ## 1. 卖家收款地址（拍卖地址）
 
