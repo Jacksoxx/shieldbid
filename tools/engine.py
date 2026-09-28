@@ -116,15 +116,78 @@ def cmd_bids(a) -> int:
     return 0
 
 
+QW = Path(__file__).with_name("bip39_english.txt")
+
+
+def new_mnemonic() -> str:
+    """24-word BIP-39 mnemonic, generated locally. Only ever written to a key file."""
+    import hashlib
+    import secrets
+    words = QW.read_text(encoding="utf-8").split()
+    ent = secrets.token_bytes(32)
+    bits = "".join(f"{b:08b}" for b in ent) + f"{hashlib.sha256(ent).digest()[0]:08b}"
+    return " ".join(words[int(bits[i * 11:(i + 1) * 11], 2)] for i in range(24))
+
+
+def cmd_newaccount(a) -> int:
+    """Create a wallet account in the engine, with a fresh mnemonic saved to a key file."""
+    slug = "".join(c if c.isalnum() else "_" for c in a.name).lower()
+    key_file = Path(a.key_file) if a.key_file else Path.home() / ".shieldbid" / f"{slug}.mnemonic"
+    if a.mnemonic_file:
+        mn = Path(a.mnemonic_file).read_text(encoding="utf-8").strip()
+    else:
+        mn = new_mnemonic()
+    height = gql(url_for(a.net, a.port), "{ currentHeight }")["currentHeight"]
+    newacc = {"name": a.name, "key": mn, "passphrase": "", "aindex": a.aindex,
+              "birth": height - 5, "pools": 7, "useInternal": False}
+    aid = gql(url_for(a.net, a.port),
+              "mutation C($n: NewAccount!){ createAccount(newAccount: $n) }",
+              {"n": newacc})["createAccount"]
+    key_file.parent.mkdir(parents=True, exist_ok=True)
+    key_file.write_text(mn + "\n", encoding="utf-8")
+    try:
+        key_file.chmod(0o600)
+    except OSError:
+        pass
+    print(f"created account {aid} ({a.name}) at height {height}")
+    print(f"mnemonic -> {key_file}   (the only way to recover funds; never paste it anywhere)")
+    return cmd_addresses(argparse.Namespace(net=a.net, port=a.port, account=aid))
+
+
+def cmd_shield(a) -> int:
+    """Move an account's transparent funds into its own orchard pool (single tx).
+
+    Bidders who receive ZEC on a t-address (e.g. withdrawn from an exchange) shield it
+    first, so the bid itself leaves the orchard pool as a fully shielded z->z payment.
+    """
+    bal = gql(url_for(a.net, a.port), Q_BAL, {"a": a.account})["balanceByAccount"]
+    addr = gql(url_for(a.net, a.port), Q_ADDR, {"a": a.account})["addressByAccount"]
+    amount = Decimal(a.amount) if a.amount else Decimal(bal["transparent"]) - Decimal("0.0002")
+    if amount <= 0:
+        print(f"nothing to shield: transparent balance {bal['transparent']} ZEC", file=sys.stderr)
+        return 1
+    payment = {"recipients": [{"address": addr["orchard"], "amount": str(amount)}], "srcPools": 0}
+    if a.dry_run:
+        print(json.dumps({"query": M_PAY, "variables": {"a": a.account, "p": payment}},
+                         ensure_ascii=False, indent=2))
+        return 0
+    print("shield txid:", gql(url_for(a.net, a.port), M_PAY, {"a": a.account, "p": payment})["pay"])
+    print(f"moved {amount} ZEC from transparent -> orchard of account {a.account}")
+    return 0
+
+
 def cmd_bid(a) -> int:
     """Bidder side: send a shielded payment whose memo is the sealed bid."""
     memo = a.memo
     if a.memo_file:
         memo = Path(a.memo_file).read_text(encoding="utf-8").strip()
-    if not memo:
+    if memo is None:
         print("need --memo or --memo-file", file=sys.stderr)
         return 2
-    payment = {"recipients": [{"address": a.to, "amount": str(Decimal(a.amount)), "memo": memo}]}
+    rec = {"address": a.to, "amount": str(Decimal(a.amount))}
+    if memo:
+        rec["memo"] = memo
+    payment = {"recipients": [rec]}
     if a.src_pools is not None:
         payment["srcPools"] = a.src_pools
     if a.dry_run:
@@ -161,6 +224,11 @@ def main(argv=None) -> int:
     p = sub.add_parser("bids", parents=[common]); p.add_argument("--account", type=int, required=True)
     p.add_argument("--json", action="store_true"); p.add_argument("--out")
     p.set_defaults(f=cmd_bids)
+    p = sub.add_parser("newaccount", parents=[common]); p.add_argument("--name", required=True)
+    p.add_argument("--aindex", type=int, default=0); p.add_argument("--key-file")
+    p.add_argument("--mnemonic-file"); p.set_defaults(f=cmd_newaccount)
+    p = sub.add_parser("shield", parents=[common]); p.add_argument("--account", type=int, required=True)
+    p.add_argument("--amount"); p.add_argument("--dry-run", action="store_true"); p.set_defaults(f=cmd_shield)
     p = sub.add_parser("bid", parents=[common]); p.add_argument("--account", type=int, required=True)
     p.add_argument("--to", required=True); p.add_argument("--amount", required=True)
     p.add_argument("--memo"); p.add_argument("--memo-file"); p.add_argument("--src-pools", type=int)
