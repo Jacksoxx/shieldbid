@@ -5,6 +5,20 @@
 
 ## 0. 现在到哪一步了
 
+> **⏰ LIVE STATE（2026-09-29 02:30 北京）— 接手前先读这段，确认"有没有在跑"**
+> - **M4 真钱轮次正在跑**，全部由 `tools/demo_01_run.py` 驱动：
+>   `status` / `fund --amount` / `bid --account N --amount X --bidder NAME` / `close` / `refund --leg winners|losers|sweep`
+> - 已上链（链高 ≈3,499,43x）：
+>   ① 用户出价 **0.012** → 卖家钱包 `56bb6efa5a23…`, h=3499413
+>   ② 用户注资 **0.02** → 投标人A `5c60b3448db4…`, h=3499430
+>   ③ 拨给投标人B **0.012** `a14355bf9522…`
+> - 记账：`docs/demo_01_ledger.json`（出价回执+commit/salt）、`docs/demo_01_settlement.json`（揭标结果）
+> - **⚠️ 接手红线**：先 `python tools/demo_01_run.py status` + 读 ledger，**哪一步已有 txid 就绝不重发**。链上是真钱，重复出价=白花钱。
+> - **⚠️ 大坑（已解决，别踩回去）**：`pay` 的 `confirmations` 默认≈10，新到账的钱要等 ~10 确认才可花，否则一直报
+>   `No feasible note selection found`。修法：payment 里显式 `"confirmations": 1`（见 `tools/demo_01_run.py` 的 `pay()`）。`srcPools` 是 **Int**（3=orchard）。
+> - **⚠️ 协议已改（关键）**：备注读不出来 —— 收到的 orchard note `memo` 恒为 `null`，`memosByTransaction` 返回 `[]`。
+>   → 出价改为 **金额即出价（escrow-as-bid）**：打多少钱=出多少钱，金额在链上加密；memo 只是装饰（Noir 里可留空）。
+
 - ✅ **M1** 协议规格 + 公开竞价台页面 + 投标人指南 + git 仓库
 - ✅ **M2（本轮完成）** 本地 Zcash 引擎跑通：
   - WSL 装好（`shieldbid` 发行版），绕过商店版无法启动的坑（见 `docs/ENGINE_SETUP.md`）
@@ -12,7 +26,9 @@
   - **卖家主网钱包**已建（账户 1），拿到 orchard 收款地址
   - **测试网卖家钱包**已建（测试网账户 1）
   - Windows ↔ WSL 打通：`python tools/engine.py` 能直接读链高/账户/地址/余额
-  - **验证了核心机制**：memo 能从 `notesByAccount` 直接解密读出（出价就是 memo）
+  - ~~验证了核心机制：memo 能从 `notesByAccount` 直接解密读出（出价就是 memo）~~ ← **已推翻**：
+    引擎对本钱包**收到**的 orchard note `memo` 恒返回 `null`，`memosByTransaction` 返回 `[]`
+    → 出价机制改为「金额即出价」
   - 投标路径 dry-run 通过（带 memo 的屏蔽付款请求成形）
 - ✅ **M3（本轮完成）** 投标人钱包就位 + 收款口可用了：
   - **主网投标人**：账户 2「SB Bidder A」→ 透明收款 `t1Pm2n2YGULXbZcgXAH3aCsY9mvTNZyD2dB`，
@@ -21,8 +37,12 @@
   - `engine.py` 新增 `newaccount`（本地生成 24 词助记词 → `~/.shieldbid/<name>.mnemonic`，chmod 600）
     与 `shield`（透明 → 自己 orchard，一次性屏蔽，交易所提币进来的第一步）
   - 助记词文件在 **Windows** `C:\Users\XiaoSS\.shieldbid\`（.gitignore 之外，绝不入库）
-- ⏭️ **M4（下一步）**：用户从 **Noir 手机钱包**（余额在 U1 统一地址）直接 z→z 转 ~0.02 ZEC 到投标人 orchard 地址
-  `u1e6cwevn…vpjpgyj` → 建投标人账户 3 → 发 3 笔**真** memo 出价（Noir 若支持备注则用户自己出一价）→ 卖家读出 → 揭标 → 录 demo
+- 🔄 **M4（进行中，2026-09-29 凌晨）**：真钱密封竞价轮次 DEMO-01 在 Zcash 主网跑
+  - 用户已用 **Noir 手机钱包**亲手发两笔：出价 `0.012` → 卖家钱包；注资 `0.02` → 投标人A（均已确认，txid 见上面 LIVE STATE）
+  - 机器人 A/B 的出价（`0.004` / `0.009`）、揭标（清算价 = 最低中标价）、退款（中标者退还多付、落标者全额退）正在按序执行
+  - 全部完成后的收尾：`refund --leg sweep` 把三个 demo 钱包余额全部打回**用户固定 U1**
+    （地址在 `~/.shieldbid/buyer_u1_address.txt`，178 字符，bech32m 校验通过，**不进 git**）
+  - ⏭️ M5（用户醒来后）：录 2 分钟 demo → 写提交材料 → ⚠️ **最后一步「提交」要用户自己点**（10/28 23:59 UTC 截止）
 
 ## 1. 卖家收款地址（拍卖地址）
 
