@@ -200,6 +200,28 @@ def cmd_bid(a) -> int:
     return 0
 
 
+def cmd_send(a) -> int:
+    """Settlement side: a plain shielded payment with no memo.
+
+    This is the refund leg — losers get their escrow back as a z->z shielded payment,
+    and the bidder's own address is the only thing the seller needs (no identity link).
+    """
+    rec = {"address": a.to, "amount": str(Decimal(a.amount))}
+    if a.memo:
+        rec["memo"] = a.memo
+    payment = {"recipients": [rec]}
+    if a.src_pools is not None:
+        payment["srcPools"] = a.src_pools
+    if a.dry_run:
+        print(json.dumps({"query": M_PAY, "variables": {"a": a.account, "p": payment}},
+                         ensure_ascii=False, indent=2))
+        return 0
+    txid = gql(url_for(a.net, a.port), M_PAY, {"a": a.account, "p": payment})["pay"]
+    print("broadcast txid:", txid)
+    print(f"sent {Decimal(a.amount)} ZEC -> {a.to}  (no memo: private refund)")
+    return 0
+
+
 def main(argv=None) -> int:
     # --net/--port are accepted both before and after the subcommand
     common = argparse.ArgumentParser(add_help=False)
@@ -233,6 +255,10 @@ def main(argv=None) -> int:
     p.add_argument("--to", required=True); p.add_argument("--amount", required=True)
     p.add_argument("--memo"); p.add_argument("--memo-file"); p.add_argument("--src-pools", type=int)
     p.add_argument("--dry-run", action="store_true"); p.set_defaults(f=cmd_bid)
+    p = sub.add_parser("send", parents=[common]); p.add_argument("--account", type=int, required=True)
+    p.add_argument("--to", required=True); p.add_argument("--amount", required=True)
+    p.add_argument("--memo"); p.add_argument("--src-pools", type=int)
+    p.add_argument("--dry-run", action="store_true"); p.set_defaults(f=cmd_send)
 
     a = ap.parse_args(argv)
     if a.cmd == "height":
