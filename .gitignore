@@ -8,6 +8,13 @@ reveal.local.json
 wallet-data/
 *.sqlite
 *.sqlite-journal
+# Zcash wallet material — NEVER in git (added 2026-09-29 during the M5.1 audit)
+*.mnemonic
+*mnemonic*.txt
+buyer_u1_address.txt
+*.db
+*.db-journal
+*.db-wal
 
 # Python
 __pycache__/
