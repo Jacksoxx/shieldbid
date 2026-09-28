@@ -200,6 +200,83 @@ def cmd_bid(a) -> int:
     return 0
 
 
+BECH_CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
+
+
+def _bech32_polymod(values):
+    gen = (0x3B6A57B2, 0x26508E6D, 0x1EA119FA, 0x3D4233DD, 0x2A1462B3)
+    chk = 1
+    for v in values:
+        top = chk >> 25
+        chk = ((chk & 0x1FFFFFF) << 5) ^ v
+        for i in range(5):
+            if (top >> i) & 1:
+                chk ^= gen[i]
+    return chk
+
+
+def _bech32_expand(hrp):
+    return [ord(c) >> 5 for c in hrp] + [0] + [ord(c) & 31 for c in hrp]
+
+
+def _base58_decode(s):
+    alpha = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+    n = 0
+    for ch in s:
+        n = n * 58 + alpha.index(ch)
+    pad = len(s) - len(s.lstrip("1"))
+    return b"\x00" * pad + n.to_bytes((n.bit_length() + 7) // 8, "big")
+
+
+def check_address(addr: str) -> dict:
+    """Offline address sanity check. Catches typos BEFORE money moves.
+
+    Unified/shielded addresses (u1..., utest1...) are Bech32m; the 90-char limit of
+    plain Bech32 does not apply to UAs (ZIP-316), so we verify the checksum and shape only.
+    Transparent addresses (t1/t3) are Base58Check.
+    """
+    a = addr.strip()
+    out = {"address": a, "length": len(a)}
+    if not a:
+        return {**out, "ok": False, "why": "empty"}
+    low = a.lower()
+    if low.startswith(("u1", "utest1", "uregtest1", "ztestsapling", "zs1")):
+        if a.lower() != a and a.upper() != a:
+            return {**out, "ok": False, "why": "mixed case (bech32 must be uniform case)"}
+        pos = low.rfind("1")
+        hrp, data = low[:pos], low[pos + 1:]
+        if hrp not in ("u", "utest", "uregtest", "ztestsapling", "zs") or len(data) < 7:
+            return {**out, "ok": False, "why": "bad prefix or too short"}
+        vals = []
+        for ch in data:
+            if ch not in BECH_CHARSET:
+                return {**out, "ok": False, "why": f"illegal char {ch!r}"}
+            vals.append(BECH_CHARSET.index(ch))
+        ok_chk = _bech32_polymod(_bech32_expand(hrp) + vals) == 0x2BC830A3
+        payload_bits = len(vals) - 6
+        return {**out, "ok": ok_chk, "kind": "shielded/UA (bech32m)", "hrp": hrp,
+                "payload_bytes": (payload_bits * 5) // 8,
+                "why": "bech32m checksum OK" if ok_chk else "CHECKSUM MISMATCH - typo?"}
+    if low.startswith(("t1", "t3", "tm", "t2")):
+        try:
+            raw = _base58_decode(a)
+        except ValueError as e:
+            return {**out, "ok": False, "why": f"base58 decode failed: {e}"}
+        good = len(raw) == 26 and hashlib.sha256(hashlib.sha256(raw[:-4]).digest()).digest()[:4] == raw[-4:]
+        return {**out, "ok": good, "kind": "transparent (base58check)",
+                "why": "base58check OK" if good else "CHECKSUM MISMATCH - typo?"}
+    return {**out, "ok": False, "why": "unrecognized address prefix"}
+
+
+def cmd_validate(a) -> int:
+    for addr in a.address:
+        r = check_address(addr)
+        flag = "OK  " if r["ok"] else "BAD "
+        print(f"{flag}{r.get('kind', '?')} len={r['length']} {r.get('why', '')}")
+        print(f"     {addr}")
+    return 0 if all(check_address(x)["ok"] for x in a.address) else 1
+
+
 def cmd_send(a) -> int:
     """Settlement side: a plain shielded payment with no memo.
 
@@ -259,6 +336,8 @@ def main(argv=None) -> int:
     p.add_argument("--to", required=True); p.add_argument("--amount", required=True)
     p.add_argument("--memo"); p.add_argument("--src-pools", type=int)
     p.add_argument("--dry-run", action="store_true"); p.set_defaults(f=cmd_send)
+    p = sub.add_parser("validate", parents=[common]); p.add_argument("address", nargs="+")
+    p.set_defaults(f=cmd_validate)
 
     a = ap.parse_args(argv)
     if a.cmd == "height":
