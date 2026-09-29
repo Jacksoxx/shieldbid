@@ -2,6 +2,11 @@
 
 **ZECATHON · track: PRIVATE MARKETS**
 
+**Live demo:** [jacksoxx.github.io/shieldbid](https://jacksoxx.github.io/shieldbid/) — the lot board a bidder
+actually uses: the seller's UA to pay, the exact amount, the memo, and the sealed state of the round. One
+static HTML file, no backend, nothing to install — open it and look around. **Repository:**
+[github.com/Jacksoxx/shieldbid](https://github.com/Jacksoxx/shieldbid)
+
 > *"The price should be public and the participants should not."*
 
 ShieldBid runs a sealed-bid auction where **the bid is a shielded Zcash transfer** — the amount you
@@ -150,6 +155,7 @@ tools/demo_01_run.py        drives a full round: status/fund/bid/close/refund
 tools/demo_01_finish.py     wind-down: close → refund → sweep (idempotent)
 tools/*_card.py             the PNG result/status/roadmap cards used in this README
 tools/watch_bids.py         poll the lot UA for newly received notes
+tools/publish_site.sh       rebuild the live demo: web/index.html → the gh-pages branch
 ```
 
 ---
