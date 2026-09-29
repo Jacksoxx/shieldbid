@@ -19,9 +19,15 @@
 >   ① USER@Noir 0.012 → 中标，只付 0.009，退 0.003；② ROBOT-B 0.009 → 中标，正好；③ ROBOT-A 0.004 → 落标，全额退 0.004。
 > - **退款/扫款腿**：用户多付 0.003 → U1（`90d35aee9490…`）；落标者 0.004 → 投标人A（`f29dbd244048…`）；
 >   扫款回 U1 四笔：`0.0036`/`0.0027`/`0.0039`/`0.0175`（txid 见 `docs/demo_01_money_trail.json`）。
-> - **⏭️ 下一步 = M5（计划已写好：`docs/M5_PLAN.md`，接手照它做）**：仓库定稿 → 录 2 分钟 demo → 写提交材料
->   → **最后一步「提交」按钮由用户自己点**（死线自带 10/14 就绪，官方截止 10/28 23:59 UTC）。
->   明早第一件事：`bash tools/engine_up.sh` 拉引擎 → 从 M5.1 README 定稿开始（不用打扰用户）。
+> - **✅ M5.1 仓库定稿已完成（2026-09-29，commit `f55e64f`）**：README / `docs/SPEC.md` / `docs/BIDDER_GUIDE.md` /
+>   `web/index.html` 全部改成 v0.2「**金额即出价**（escrow-as-bid）」口径——出价 = 一笔屏蔽转账的金额，
+>   memo 只作装饰、协议永不解析；`docs/web_console.png` 是竞价台渲染截图。**SPEC 版本号 = SHIELDBID/1 v0.2（冻结）**。
+> - **⏭️ 下一步 = M5.2 录 2 分钟 demo + M5.3 提交材料**（计划见 `docs/M5_PLAN.md`）：
+>   演示脚本 = 出价期状态卡 → 三笔出价上链 → 截止 → 揭标（清算价 0.009、名额 2）→ 多付与落标退款 →
+>   U1 扫款回款。素材现成：`docs/DEMO_01_REPORT.md`（12 笔腿表）+ `docs/demo01_*.png` + 各 json。
+>   → **最后一步「提交」按钮由用户自己点**（官方截止 10/28 23:59 UTC，死线留足余量）。
+> - **接手第一件事**：`bash tools/engine_up.sh` 拉双引擎（主网 8000 / 测试网 8001）→
+>   `python tools/engine.py height --net mainnet` 看到链高即就绪 → 然后从 M5.2 开始（不用打扰用户）。
 > - **⚠️ 接手红线**：先 `python tools/demo_01_run.py status` + 读 ledger 与 **`docs/demo_01_settlement.json` + `docs/demo_01_refund_receipts.json`**，
 >  **哪一步已有 txid 就绝不重发**。链上是真钱，重复出价/重复退款=白花钱。扫款段是按余额驱动的，天然幂等。
 > - **⚠️ 大坑 #3（2026-09-29 发现）**：付款前**必须**先 `synchronizeAccount`，否则钱包还拿着「刚被自己花掉的那张 note」
