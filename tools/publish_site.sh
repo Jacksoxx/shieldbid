@@ -43,7 +43,7 @@ git config user.email "86060929+${OWNER}@users.noreply.github.com"
 git add index.html .nojekyll
 git commit -q -m "site: publish the bidder console (generated from web/index.html)"
 git push -f -q "$REMOTE" gh-pages
-echo "published commit: $(git rev-parse --short HEAD) ($(git rev-parse --short HEAD^ 2>/dev/null || true))"
+echo "published commit: $(git rev-parse --short HEAD)"
 
 echo "=== trigger a Pages build ==="
 "$GH" api -X POST "/repos/${OWNER}/shieldbid/pages/builds" --jq '"build: " + .status' 2>&1 | head -2
@@ -51,7 +51,9 @@ echo "=== trigger a Pages build ==="
 echo "=== wait for the site ==="
 for i in $(seq 1 12); do
   sleep 20
-  CODE=$(curl -s --noproxy "*" -o /dev/null -w '%{http_code}' --max-time 20 "https://${OWNER}.github.io/shieldbid/" 2>/dev/null | grep -o '[0-9]\{3\}' | head -1)
+  # note: `curl | grep` can fail under `set -e`/pipefail (no 3-digit code), so guard both steps
+  CODE=$(curl -s --noproxy "*" -o /dev/null -w '%{http_code}' --max-time 20 "https://${OWNER}.github.io/shieldbid/" 2>/dev/null || true)
+  CODE=$(printf '%s' "$CODE" | grep -o '[0-9]\{3\}' | head -1 || true)
   CODE=${CODE:-000}
   echo "t+$((i * 20))s site_http=$CODE"
   [ "$CODE" = "200" ] && break
