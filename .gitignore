@@ -27,3 +27,6 @@ venv/
 Thumbs.db
 *.log
 *.tmp
+
+# 临时抓屏/调试产物（不入库）
+docs/_*.png
