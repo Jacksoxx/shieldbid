@@ -15,7 +15,7 @@ Any wallet that can send **shielded (z→z)** ZEC works. A memo field is *not* r
 
 | Wallet | Platform | Notes |
 |---|---|---|
-| **Zodl** (aka **Zashi**) | iOS / Android | ECC's wallet, shielded by default |
+| **Zodl** | iOS / Android | ECC's wallet, shielded by default |
 | **Ywallet** | iOS / Android / desktop | send from the shielded balance |
 | **Edge Wallet** | iOS / Android | shielded ZEC send |
 | **Zkool** | Windows / macOS / Linux / Android | desktop option |
