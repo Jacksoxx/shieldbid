@@ -36,23 +36,22 @@ box(76, 33, 21.5, 15, "4. refunds",
     ["losing bids sent back", "overpayment too"], edge=C.GOOD, tcolor=C.GOOD)
 
 
-def arrow(x1, x2, y=40.5, color=C.ACC, txt=None):
+def arrow(x1, x2, y=40.5, color=C.ACC):
     ax.add_patch(FancyArrowPatch((x1, y), (x2, y), arrowstyle="-|>", mutation_scale=18,
                                  linewidth=2.0, color=color, shrinkA=0, shrinkB=0))
-    if txt:
-        C.fit(ax, (x1 + x2) / 2, y + 2.1, txt, 8, size=13, color=C.DIM, ha="center")
 
 
-arrow(25.4, 26.1, txt="z to z")
-arrow(49.9, 50.6, txt="sealed")
-arrow(74.4, 75.1, color=C.GOOD, txt="refund")
+arrow(25.4, 26.1)
+arrow(49.9, 50.6)
+arrow(74.4, 75.1, color=C.GOOD)
 
-ax.add_patch(FancyBboxPatch((3, 20), 94.5, 9.0, boxstyle="round,pad=0.8,rounding_size=1.6",
+ax.add_patch(FancyBboxPatch((3, 19), 94.5, 10.5, boxstyle="round,pad=0.8,rounding_size=1.6",
                             linewidth=1.4, edgecolor=C.GOOD, facecolor="#0f1a15"))
-C.fit(ax, 50, 26.0, "Refunds are plain shielded transfers straight back to the bidder's own address: "
-      "no escrow, no lockup.", 88, size=17, head=True, color=C.GOOD, ha="center")
-C.fit(ax, 50, 22.2, "One of the three demo bids was sent by hand from a phone wallet running Noir.",
-      88, size=16, color=C.DIM, ha="center")
+C.fit(ax, 50, 27.0, "Refunds are plain shielded transfers straight back to the bidder's own address.",
+      88, size=17, head=True, color=C.GOOD, ha="center")
+C.fit(ax, 50, 23.6, "No escrow. No lockup.", 88, size=17, head=True, color=C.GOOD, ha="center")
+C.fit(ax, 50, 20.4, "One of the three demo bids was sent by hand from a phone wallet running Noir.",
+      88, size=15, color=C.DIM, ha="center")
 
 ax.add_patch(FancyBboxPatch((3, 8.5), 94.5, 9.0, boxstyle="round,pad=0.8,rounding_size=1.6",
                             linewidth=1.4, edgecolor=C.WARN, facecolor="#1c1608"))
