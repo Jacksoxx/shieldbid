@@ -1,92 +1,65 @@
 # -*- coding: utf-8 -*-
-"""Final result card for DEMO-01 (settlement + money trail), dark image, English."""
+# Settlement card for DEMO-01: who won, what they pay, what comes back (English).
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import cardkit as C
 
-REPO = Path(__file__).resolve().parents[1]
-ST = json.loads((REPO / "docs" / "demo_01_settlement.json").read_text(encoding="utf-8"))
-MT = json.loads((REPO / "docs" / "demo_01_money_trail.json").read_text(encoding="utf-8"))
-OUT = REPO / "docs" / "demo01_result.png"
+C.use_fonts()
+ROOT = Path(__file__).resolve().parents[1]
+DOCS = ROOT / "docs"
+ST = json.loads((DOCS / "demo_01_settlement.json").read_text(encoding="utf-8"))
+MT = json.loads((DOCS / "demo_01_money_trail.json").read_text(encoding="utf-8"))
 
-BG, BOX, EDGE = "#0b0f14", "#141c26", "#2b3a4a"
-TXT, DIM, GOOD, WARN, BAD = "#e6edf3", "#8b98a5", "#3fb950", "#d29922", "#f85149"
+SHORT = {"USER@Noir": "you (Noir wallet)"}
+fig, ax = C.use_dark(11.0, 5.6)
+C.T(ax, 4, 48.0, "ShieldBid", size=17, head=True, color=C.ACC)
+C.fit(ax, 4, 43.8, "DEMO-01 sealed-bid round - the settlement", 46, size=22, head=True)
+C.T(ax, 96, 48.0, "ZCASH MAINNET", size=13, head=True, color=C.WARN, ha="right")
+C.fit(ax, 96, 43.8, f"clearing price {ST['clearing_price']} ZEC", 34, size=15, color=C.TXT, ha="right")
+C.fit(ax, 4, 40.4, "Bids are encrypted on chain; only the auction wallet can read them.",
+      92, size=16, color=C.DIM)
+C.fit(ax, 4, 37.2, "Losing amounts and identities are never published.", 92, size=16, color=C.DIM)
+# --- results table ---
+C.box(ax, 4, 10.0, 52, 25.4)
+C.fit(ax, 7, 32.0, "Reveal - uniform price: winners pay the lowest winning bid",
+      46, size=16, color=C.DIM)
+for x, w, label in ((7, 5, "rank"), (14, 19, "bidder"), (35, 9, "bid"),
+                    (46, 8, "pays"), (55, 6, "refund")):
+    C.fit(ax, x, 27.8, label, w, size=11, head=True, color=C.DIM)
+def _n(v):
+    return v if isinstance(v, str) else f"{v:g}"
 
-fig, ax = plt.subplots(figsize=(11, 6.4), dpi=150)
-fig.patch.set_facecolor(BG)
-ax.set_facecolor(BG)
-ax.set_xlim(0, 100)
-ax.set_ylim(0, 64)
-ax.axis("off")
 
+for i, r in enumerate(ST.get("settlement", [])):
+    y = 24.0 - i * 4.0
+    C.fit(ax, 7, y, str(r.get("rank", "")), 5, size=15, color=C.DIM)
+    C.fit(ax, 14, y, SHORT.get(r.get("bidder", ""), str(r.get("bidder", ""))), 19, size=16,
+          color=C.GOOD if i == 0 else C.TXT)
+    C.fit(ax, 35, y, _n(r.get("amount", 0)), 9, size=16, color=C.GOOD)
+    C.fit(ax, 46, y, _n(r.get("pays", 0)), 8, size=16, color=C.TXT)
+    C.fit(ax, 55, y, _n(r.get("refund", 0)), 6, size=16, color=C.TXT)
+note = (f"{ST['slots']} slots - reserve {_n(ST['reserve'])} ZEC - "
+        f"{ST['bids_received']} bids received")
+C.fit(ax, 7, 14.2, note, 50, size=16, color=C.WARN, wrap=1)
 
-def box(x, y, w, h):
-    ax.add_patch(plt.Rectangle((x, y), w, h, facecolor=BOX, edgecolor=EDGE, lw=1))
+# --- your money ---
+C.panel(ax, 63.5, 10.0, 32.5, 25.4, "Your money")
+C.fit(ax, 66, 28.4, f"in {_n(MT['in_total_from_user'])} ZEC", 28, size=20, color=C.TXT)
+C.fit(ax, 66, 24.4, f"bid {_n(ST['settlement'][0]['amount'])} + float 0.02", 28, size=15, color=C.DIM)
+C.fit(ax, 66, 20.0, f"out {_n(MT['out_to_user'])} ZEC", 28, size=20, color=C.GOOD)
+C.fit(ax, 66, 16.0, "5 legs, all to your U1", 28, size=15, color=C.DIM)
+C.fit(ax, 66, 12.6, "cost -0.001 ZEC in chain fees", 28, size=15, color=C.DIM)
+C.fit(ax, 66, 10.4, "no escrow, no lockup, nothing bought", 28, size=14, color=C.GOOD)
 
+C.T(ax, 4, 5.0, f"protocol SHIELDBID/1 - receipt docs/demo_01_settlement.json",
+    size=14, color=C.DIM)
 
-def T(x, y, s, color=TXT, size=10, weight="normal", ha="left"):
-    ax.text(x, y, s, color=color, fontsize=size, weight=weight, ha=ha)
+out = DOCS / "demo01_result.png"
+fig.savefig(out, dpi=150, facecolor=C.BG, bbox_inches="tight", pad_inches=0.25)
+print(f"wrote {out} | {'overflow: ' + '; '.join(C.WARNINGS) if C.WARNINGS else 'ok'}")
 
-
-# ------------------------------------------------------------------ header
-T(4, 58.5, "ShieldBid - DEMO-01 sealed-bid result", size=19, weight="bold")
-T(4, 54.2, "Bids are encrypted on-chain; only the auction wallet can read them.",
-  color=DIM, size=10)
-T(4, 51.9, "Losing amounts and identities are never published.", color=DIM, size=10)
-T(96, 58.5, "Zcash mainnet", color=WARN, size=11, ha="right")
-T(96, 55.4, f"clearing price {ST['clearing_price']} ZEC", color=GOOD, size=11,
-  weight="bold", ha="right")
-
-# ------------------------------------------------------------------ results
-box(4, 30, 56, 20)
-T(7, 47.2, "Reveal - uniform price: every winner pays the lowest winning bid",
-  color=DIM, size=10.5)
-for x, label in ((7, "rank"), (15, "bidder"), (37, "bid"), (46, "pays"), (54, "refund")):
-    T(x, 43.9, label, color=DIM, size=10)
-
-y = 40.3
-for row in ST["settlement"]:
-    win = row["result"] == "win"
-    name = row["bidder"].replace("USER@Noir", "you (Noir wallet)")
-    T(7, y, f"#{row['rank']}", color=GOOD if win else BAD, size=11.5, weight="bold")
-    T(15, y, name, size=11.5)
-    T(37, y, row["amount"], size=11.5)
-    T(46, y, f"{float(row['pays']):.3f}", color=GOOD if win else BAD, size=11.5, weight="bold")
-    T(54, y, f"{float(row['refund']):.3f}", color=DIM, size=11.5)
-    y -= 3.5
-
-T(7, 31.9, f"{ST['slots']} slots - reserve {ST['reserve']} ZEC - {ST['bids_received']} bids "
-           f"received (the count itself is never published)", color=DIM, size=9.5)
-
-# ------------------------------------------------------------------ money
-box(62, 30, 34, 20)
-T(65, 47.2, "your money", color=DIM, size=10.5)
-T(65, 43.9, f"in  {MT['in_total_from_user']} ZEC (bid 0.012 + float 0.02)", size=10.5)
-T(65, 40.3, f"out {MT['out_to_user']} ZEC (5 legs, all to your U1)", color=GOOD,
-  size=11, weight="bold")
-T(65, 36.7, f"cost ~{MT['chain_fees_approx']} ZEC chain fees (all of it)", color=DIM, size=10)
-T(65, 33.1, "no escrow, no lockup, nothing bought", color=GOOD, size=10)
-
-# ------------------------------------------------------------------ trail
-box(4, 5, 92, 22)
-T(7, 24.2, "every leg is on-chain (amounts visible only to the parties, txids public)",
-  color=DIM, size=10.5)
-y = 20.6
-for leg in MT["legs"]:
-    T(7, y, f"{leg['i']:>2}", color=DIM, size=8.5)
-    T(12, y, leg["what"], size=8.5)
-    T(45, y, f"{leg['amount']} ZEC", color=GOOD if leg["to"].startswith("user") else TXT, size=9)
-    T(57, y, f"{leg['from']} -> {leg['to']}", color=DIM, size=8.5)
-    T(79, y, f"{leg['txid'][:12]}...", color=DIM, size=8)
-    y -= 1.28
-
-T(4, 2, "protocol SHIELDBID/1 - receipt docs/demo_01_settlement.json - "
-        "trail docs/demo_01_money_trail.json", color=DIM, size=9.5)
-
-fig.savefig(OUT, facecolor=BG, bbox_inches="tight")
-print("wrote", OUT)

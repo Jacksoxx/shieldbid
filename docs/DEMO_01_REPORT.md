@@ -80,5 +80,6 @@ Machine-readable: `docs/demo_01_money_trail.json` (legs), `docs/demo_01_transact
 ```bash
 python tools/demo_01_run.py status                 # what the ledger already has
 python tools/demo_01_finish.py                     # wait → close → refund → sweep (idempotent)
-python tools/make_result_card.py                   # docs/demo01_result.png
+python tools/make_result_card.py                   # docs/demo01_result.png (settlement)
+python tools/make_trail_card.py                    # docs/demo01_trail.png (12 legs)
 ```

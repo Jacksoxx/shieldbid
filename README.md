@@ -100,6 +100,8 @@ Machine-readable receipts, not hand-typed:
 
 ![DEMO-01 result](docs/demo01_result.png)
 
+![DEMO-01 money trail](docs/demo01_trail.png)
+
 ### Two findings the round produced
 
 1. **The memo cannot carry a bid — so the amount carries it.** A *received* orchard note reads back
