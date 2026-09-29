@@ -35,7 +35,7 @@ button pressed once, the three steps, the wallet list.
 **On screen:** `docs/demo01_status.png` (the sealed round card).
 
 > Three bids arrived in this round: 0.012, 0.009 and 0.004 ZEC. One of them was sent by hand from a
-> phone wallet running Noir. The auction wallet syncs, and only the seller can read those amounts.
+> Noir wallet. The auction wallet syncs, and only the seller can read those amounts.
 > This is the round afterwards: three bids, two slots, and no outside observer can see any of the
 > numbers.
 

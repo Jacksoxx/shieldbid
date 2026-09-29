@@ -47,18 +47,18 @@ arrow(74.4, 75.1, color=C.GOOD)
 
 ax.add_patch(FancyBboxPatch((3, 19), 94.5, 10.5, boxstyle="round,pad=0.8,rounding_size=1.6",
                             linewidth=1.4, edgecolor=C.GOOD, facecolor="#0f1a15"))
-C.fit(ax, 50, 27.0, "Refunds are plain shielded transfers straight back to the bidder's own address.",
+C.fit(ax, 50, 27.0, "Refunds are plain shielded transfers.",
       88, size=17, head=True, color=C.GOOD, ha="center")
 C.fit(ax, 50, 23.6, "No escrow. No lockup.", 88, size=17, head=True, color=C.GOOD, ha="center")
-C.fit(ax, 50, 20.4, "One of the three demo bids was sent by hand from a phone wallet running Noir.",
+C.fit(ax, 50, 20.4, "Back to the bidder's own address; nothing is held.",
       88, size=15, color=C.DIM, ha="center")
 
 ax.add_patch(FancyBboxPatch((3, 8.5), 94.5, 9.0, boxstyle="round,pad=0.8,rounding_size=1.6",
                             linewidth=1.4, edgecolor=C.WARN, facecolor="#1c1608"))
 C.fit(ax, 50, 14.6, "The only ZEC actually spent: chain fees", 88, size=17, head=True,
       color=C.WARN, ha="center")
-C.fit(ax, 50, 10.8, "About 0.00015 ZEC per transaction: 12 transactions in the round, "
-      "~0.001 ZEC (~$1.50) in total.", 88, size=16, color=C.DIM, ha="center")
+C.fit(ax, 50, 10.8, "12 transactions, ~$1.50 in total; about 0.00015 ZEC each.",
+      88, size=16, color=C.DIM, ha="center")
 
 C.fit(ax, 2, 4.0, "On-chain transfers cannot be undone - which is why the demo keeps the round "
       "small and refunds every losing bid.", 96, size=15, color=C.DIM)

@@ -28,8 +28,8 @@ C.fit(ax, 4, 37.2, "Losing amounts and identities are never published.", 92, siz
 C.box(ax, 4, 10.0, 52, 25.4)
 C.fit(ax, 7, 32.0, "Reveal - uniform price: winners pay the lowest winning bid",
       46, size=16, color=C.DIM)
-for x, w, label in ((6, 4.0, "rank"), (11, 17, "bidder"), (30, 8, "bid"),
-                    (39, 8, "pays"), (48, 7, "refund")):
+COLS = ((6, 4.0), (11, 18.0), (31, 7.0), (39, 7.5), (48, 6.5))
+for (x, w), label in zip(COLS, ("rank", "bidder", "bid", "pays", "refund")):
     C.fit(ax, x, 27.8, label, w, size=11, head=True, color=C.DIM)
 def _n(v):
     return v if isinstance(v, str) else f"{v:g}"
@@ -44,12 +44,12 @@ def _z(v, dec=3):
 
 for i, r in enumerate(ST.get("settlement", [])):
     y = 24.0 - i * 4.0
-    C.fit(ax, 7, y, str(r.get("rank", "")), 5, size=15, color=C.DIM)
-    C.fit(ax, 14, y, SHORT.get(r.get("bidder", ""), str(r.get("bidder", ""))), 19, size=16,
-          color=C.GOOD if i == 0 else C.TXT)
-    C.fit(ax, 30, y, _z(r.get("amount", 0)), 8, size=16, color=C.GOOD)
-    C.fit(ax, 39, y, _z(r.get("pays", 0)), 8, size=16, color=C.TXT)
-    C.fit(ax, 48, y, _z(r.get("refund", 0)), 7, size=16, color=C.TXT)
+    C.fit(ax, COLS[0][0], y, str(r.get("rank", "")), COLS[0][1], size=15, color=C.DIM)
+    C.fit(ax, COLS[1][0], y, SHORT.get(r.get("bidder", ""), str(r.get("bidder", ""))),
+          COLS[1][1], size=16, color=C.GOOD if i == 0 else C.TXT)
+    C.fit(ax, COLS[2][0], y, _z(r.get("amount", 0)), COLS[2][1], size=16, color=C.GOOD)
+    C.fit(ax, COLS[3][0], y, _z(r.get("pays", 0)), COLS[3][1], size=16, color=C.TXT)
+    C.fit(ax, COLS[4][0], y, _z(r.get("refund", 0)), COLS[4][1], size=16, color=C.TXT)
 note = (f"{ST['slots']} slots - reserve {_n(ST['reserve'])} ZEC - "
         f"{ST['bids_received']} bids received")
 C.fit(ax, 7, 14.2, note, 50, size=16, color=C.WARN, wrap=1)

@@ -8,7 +8,7 @@
   "out_to_user": "0.0307",
   "chain_fees_approx": "0.001",
   "legs": [
-    {"i": 1, "what": "user bid (sent by hand, phone wallet)", "amount": "0.012", "from": "user", "to": "lot/seller", "txid": "56bb6efa5a23841f2212211de3776f66a3231d28a230e831c0e9f6a05c715a40", "height": 3499413},
+    {"i": 1, "what": "user bid (sent by hand, Noir wallet)", "amount": "0.012", "from": "user", "to": "lot/seller", "txid": "56bb6efa5a23841f2212211de3776f66a3231d28a230e831c0e9f6a05c715a40", "height": 3499413},
     {"i": 2, "what": "user funds bidder A (robot float)", "amount": "0.02", "from": "user", "to": "bidder A", "txid": "5c60b3448db4df867cb133838330a216c1ffd74e2584b7ad87b01e1fdd3a43f0", "height": 3499430},
     {"i": 3, "what": "float moved on to bidder B", "amount": "0.012", "from": "bidder A", "to": "bidder B", "txid": "a14355bf95222be4a573ce8d31ab659c860cba10e66c73754b91e18b13373fb3", "height": 3499438},
     {"i": 4, "what": "ROBOT-B bid", "amount": "0.009", "from": "bidder B", "to": "lot/seller", "txid": "91fefe4345372c4d70a85d3360430092be6ac8e21196bca0803a53862a575909", "height": 3499451},

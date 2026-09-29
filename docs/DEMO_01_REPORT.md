@@ -8,7 +8,7 @@ read a single bid amount.
 |---|---|
 | Protocol | `SHIELDBID/1` — escrow-as-bid: the **amount** of a shielded z→z transfer *is* the bid |
 | Network | Zcash **mainnet** |
-| Bids | 3 (🤖 ROBOT-A `0.004`, **user, sent by hand from a phone wallet** `0.012`, 🤖 ROBOT-B `0.009`) |
+| Bids | 3 (🤖 ROBOT-A `0.004`, **user, sent by hand from a Noir wallet** `0.012`, 🤖 ROBOT-B `0.009`) |
 | Slots | 2 · reserve `0.003` |
 | Clearing price | **`0.009` ZEC** (uniform price = lowest winning bid) |
 | Closed | 2026-09-28T18:37:46Z, height 3,499,452 |
@@ -26,7 +26,7 @@ read a single bid amount.
 
 | # | Bidder | Bid | Result | Pays | Refund |
 |---|---|---|---|---|---|
-| 1 | user (phone wallet) | 0.012 | win | 0.009 | 0.003 |
+| 1 | user (Noir wallet) | 0.012 | win | 0.009 | 0.003 |
 | 2 | ROBOT-B | 0.009 | win | 0.009 | 0.000 |
 | 3 | ROBOT-A | 0.004 | lose | 0 | 0.004 |
 

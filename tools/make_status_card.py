@@ -36,7 +36,7 @@ for b in LED["bids"]:
     C.fit(ax, 7, y, NAME.get(b["bidder"], b["bidder"]), 24, size=15, color=C.TXT)
     C.fit(ax, 32, y, f"{b['amount']}", 18, size=15, color=C.GOOD, head=True)
     C.fit(ax, 52, y, f"{b['txid'][:10]}…", 22, size=15, color=C.DIM)
-    src = "by hand, phone wallet" if b["bidder"].startswith("USER") else "script robot"
+    src = "by hand, Noir wallet" if b["bidder"].startswith("USER") else "script robot"
     C.fit(ax, 76, y, src, 18, size=15, color=C.DIM)
     y -= 3.2
 

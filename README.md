@@ -58,12 +58,12 @@ trusted with keys or amounts.
 ## DEMO-01 — a real round on Zcash mainnet
 
 Round closed **2026-09-28T18:37:46Z** at height **3,499,452**. 3 sealed bids, 2 slots, reserve
-0.003 ZEC. The human bid was sent **by hand from a phone wallet** (Noir) — the two others by the
+0.003 ZEC. The human bid was sent **by hand from a Noir wallet** — the two others by the
 repo's own CLI. Nothing of the user's money is left in any demo wallet.
 
 | # | Bidder | Bid | Result | Pays | Refunded |
 |---|---|---|---|---|---|
-| 1 | human, from a phone wallet | 0.012 | **win** | 0.009 | 0.003 |
+| 1 | human, from a Noir wallet | 0.012 | **win** | 0.009 | 0.003 |
 | 2 | ROBOT-B (CLI) | 0.009 | **win** | 0.009 | — |
 | 3 | ROBOT-A (CLI) | 0.004 | lose | 0 | 0.004 |
 

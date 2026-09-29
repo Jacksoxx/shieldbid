@@ -9,7 +9,7 @@ Acts
   1. close  - the lot wallet reads its shielded notes and publishes the receipts
               (clearing price + who won + how much each bidder gets back)
   2. refund - the loser's escrow goes back to its own demo wallet; the winner's
-              overpayment goes back to the user's phone-wallet address
+              overpayment goes back to the user's Noir-wallet address
   3. sweep  - whatever is still sitting in the three demo wallets is sent to the
               user's own shielded address, so the demo wallets end up empty
 
@@ -186,7 +186,7 @@ def main() -> int:
 
     st["user_refund_address"] = refund_to
     st["refund_note"] = ("escrow sat in the lot wallet; every refund is a shielded payout from it. "
-                         "The user's phone wallet gets the overpayment, the losing robot gets its "
+                         "The user's Noir wallet gets the overpayment, the losing robot gets its "
                          "escrow back in its own demo wallet, then the wind-down sweep returns "
                          "everything else to the user.")
     d.SETTLEMENT.write_text(json.dumps(st, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

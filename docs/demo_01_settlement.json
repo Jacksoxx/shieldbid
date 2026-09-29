@@ -51,5 +51,5 @@
   ],
   "closed_utc": "2026-09-28T18:37:46Z",
   "user_refund_address": "u19u8zep364jn2ndyudper0ud33n7gj0xnpv5k7hs2jhryv05n3cym6ql9q2wrwsczl33qj32ekz659ukca6cslwzxcu0drah8932azmdg2eg4jr20kk0ka3fh7uvv7hnv8rxx6dj7hcx23nvur8ae7dxhrt50l5psjmghzg5lsqhzvwwf",
-  "refund_note": "escrow sat in the lot wallet; every refund is a shielded payout from it. The user's phone wallet gets the overpayment, the losing robot gets its escrow back in its own demo wallet, then the wind-down sweep returns everything else to the user."
+  "refund_note": "escrow sat in the lot wallet; every refund is a shielded payout from it. The user's Noir wallet gets the overpayment, the losing robot gets its escrow back in its own demo wallet, then the wind-down sweep returns everything else to the user."
 }
