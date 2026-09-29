@@ -16,7 +16,7 @@ OUT = REPO / "docs" / "demo01_status.png"
 BG, BOX, EDGE = "#0b0f14", "#141c26", "#2b3a4a"
 TXT, DIM, GOOD, WARN = "#e6edf3", "#8b98a5", "#3fb950", "#d29922"
 
-NAME = {"USER@Noir": "you (phone wallet)"}
+NAME = {"USER@Noir": "you (Noir wallet)"}
 
 fig, ax = plt.subplots(figsize=(10, 5.6), dpi=150)
 fig.patch.set_facecolor(BG)
