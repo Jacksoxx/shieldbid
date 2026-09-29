@@ -74,10 +74,12 @@
   .lot h1{margin:0 0 4px;font-size:24px;line-height:1.2;font-weight:510;letter-spacing:-.29px;color:var(--ink)}
   .lot .meta{font-size:13px;color:var(--ink-4)}
   .facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:0 18px 18px}
+  .facts + .facts{border-top:1px solid var(--line-sub);padding-top:16px}
   @media (max-width:620px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
   .fact .k{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-4)}
   .fact .v{font-size:17px;color:var(--ink);font-weight:510;margin-top:3px;font-variant-numeric:tabular-nums}
   .fact .v small{font-size:12px;color:var(--ink-4);font-weight:400;margin-left:4px}
+  .fact .v.dim{color:var(--ink-3);font-size:15px}
 
   /* ---------- address ---------- */
   .addr-row{display:flex;gap:10px;align-items:stretch}
@@ -91,6 +93,7 @@
     font-family:var(--sans);font-size:13px;font-weight:510;color:#e2e4e7;cursor:pointer;
     background:rgba(255,255,255,.04);border:1px solid #24282c;border-radius:6px;padding:0 14px;
     transition:background .12s ease,color .12s ease,border-color .12s ease;
+    flex:0 0 auto;
   }
   button:hover{background:rgba(255,255,255,.08);color:var(--ink)}
   button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -141,6 +144,14 @@
     margin-top:14px;padding:11px 13px;border:1px solid rgba(217,163,67,.28);background:rgba(217,163,67,.06);
     border-radius:8px;font-size:12.5px;color:#ddc189;line-height:1.55
   }
+  .warn.ok{border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.06);color:#a8d9bb}
+  .warn strong{color:var(--ink)}
+
+  /* ---------- evidence ---------- */
+  .evi{list-style:none;margin:0;padding:0;font-size:13px}
+  .evi li{padding:8px 0;border-top:1px solid var(--line-sub)}
+  .evi li:first-child{border-top:0;padding-top:0}
+  .evi .d{display:block;color:var(--ink-4);font-size:11.5px;margin-top:2px}
 
   /* ---------- table ---------- */
   table{width:100%;border-collapse:collapse;font-size:13px}
@@ -151,9 +162,13 @@
   td{padding:11px 14px;border-bottom:1px solid var(--line-sub);color:var(--ink-3);font-family:var(--mono);font-size:12.5px}
   tr:last-child td{border-bottom:0}
   td.strong{color:var(--ink-2)}
+  td a{color:var(--accent)}
+  td a:hover{color:var(--accent-hi)}
   .tag{font-family:var(--sans);font-size:11px;font-weight:510;padding:2px 8px;border-radius:9999px;border:1px solid var(--line);color:var(--ink-3)}
   .tag.ok{color:var(--emerald);border-color:rgba(16,185,129,.3)}
   .tag.sealed{color:var(--accent);border-color:rgba(113,112,255,.3)}
+  .tbl-h{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-4);margin:22px 0 10px}
+  .tbl-h:first-child{margin-top:0}
 
   .foot{margin-top:26px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--ink-4)}
   .foot .sp{flex:1}
@@ -171,15 +186,15 @@
     </svg>
     ShieldBid
   </span>
-  <span class="pill demo">DEMO LOT</span>
+  <span class="pill demo">DEMO-01 · SETTLED</span>
   <span class="grow"></span>
   <span class="pill"><span class="dot"></span> Zcash mainnet</span>
-  <span class="pill" id="clock">seals in —</span>
+  <span class="pill">closed 2026-09-28 18:37:46 UTC</span>
 </header>
 
 <main class="wrap">
   <nav class="crumbs">
-    <b>Private markets</b> <span>/</span> <span>Lot 001</span> <span>/</span> <span>sealed-bid window</span>
+    <b>Private markets</b> <span>/</span> <span>DEMO-01</span> <span>/</span> <span>settled round</span>
   </nav>
 
   <div class="grid">
@@ -190,30 +205,70 @@
           <div class="thumb">LOT 001</div>
           <div>
             <h1>zkSNARKs #9631</h1>
-            <div class="meta">Seller <b style="color:var(--ink-2);font-weight:510">JACKSOxx</b> · window opened 2026-09-29 00:00 UTC</div>
+            <div class="meta">Seller <b style="color:var(--ink-2);font-weight:510">JACKSOxx</b> · sealed window 2026-09-28 17:54 &rarr; 18:37 UTC</div>
           </div>
         </div>
         <div class="facts">
-          <div class="fact"><div class="k">Reserve (public)</div><div class="v">1.20 <small>ZEC</small></div></div>
-          <div class="fact"><div class="k">Sealed bids</div><div class="v" id="count">3 <small>bids</small></div></div>
-          <div class="fact"><div class="k">Reveal at</div><div class="v" style="font-size:15px">2026-10-05 <small>18:00 UTC</small></div></div>
+          <div class="fact"><div class="k">Reserve (public)</div><div class="v">0.003 <small>ZEC</small></div></div>
+          <div class="fact"><div class="k">Bids received</div><div class="v">3</div></div>
+          <div class="fact"><div class="k">Slots</div><div class="v">2 <small>filled</small></div></div>
+        </div>
+        <div class="facts">
+          <div class="fact"><div class="k">Clearing price</div><div class="v">0.009 <small>ZEC</small></div></div>
+          <div class="fact"><div class="k">Paid by the winners</div><div class="v">0.018 <small>ZEC</small></div></div>
+          <div class="fact"><div class="k">Refunded to bidders</div><div class="v">0.007 <small>ZEC</small></div></div>
         </div>
       </section>
 
       <section class="card">
         <div class="card-h">
-          <h2>Place a sealed bid</h2>
-          <span class="sub">one shielded transfer — the amount is the bid</span>
+          <h2>Receipt list</h2>
+          <span class="sub">what the seller published at reveal</span>
+        </div>
+        <div class="card-b" style="padding-top:6px">
+          <div class="tbl-h">Bids received</div>
+          <table>
+            <thead>
+              <tr><th>When (UTC)</th><th>Transaction</th><th>Amount</th><th>Who</th><th>Result</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>09-28 17:54</td><td class="strong"><a href="https://mainnet.zcashexplorer.app/transactions/56bb6efa5a23841f2212211de3776f66a3231d28a230e831c0e9f6a05c715a40">56bb6e&hellip;715a40</a></td><td>0.012</td><td>USER@Noir</td><td><span class="tag ok">win &middot; pays 0.009</span></td></tr>
+              <tr><td>09-28 18:34</td><td class="strong"><a href="https://mainnet.zcashexplorer.app/transactions/91fefe4345372c4d70a85d3360430092be6ac8e21196bca0803a53862a575909">91fefe&hellip;575909</a></td><td>0.009</td><td>ROBOT-B</td><td><span class="tag ok">win &middot; pays 0.009</span></td></tr>
+              <tr><td>09-28 18:34</td><td class="strong"><a href="https://mainnet.zcashexplorer.app/transactions/4f7926eeadc0dd281b5a010a00f75b08b1a29e8e4b82fd5990d227edf08fa22f">4f7926&hellip;8fa22f</a></td><td>0.004</td><td>ROBOT-A</td><td><span class="tag">lose &middot; refunded 0.004</span></td></tr>
+            </tbody>
+          </table>
+
+          <div class="tbl-h">Refund legs (shielded, from the lot wallet)</div>
+          <table>
+            <thead>
+              <tr><th>When (UTC)</th><th>Transaction</th><th>Amount</th><th>To</th><th>What</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>09-28 18:35</td><td class="strong"><a href="https://mainnet.zcashexplorer.app/transactions/90d35aee94903166cbbd3ecbc9f24d96f0c7d38f6f4f37cd971d7c0a8a968cbe">90d35a&hellip;968cbe</a></td><td>0.003</td><td>USER@Noir</td><td>overpayment &mdash; won at 0.012, uniform price 0.009</td></tr>
+              <tr><td>09-28 18:40</td><td class="strong"><a href="https://mainnet.zcashexplorer.app/transactions/f29dbd244048653e2f69cd7bd494d0c79681501164164640a5bb53f3dc8d7b7d">f29dbd&hellip;8d7b7d</a></td><td>0.004</td><td>ROBOT-A</td><td>losing bid refunded in full</td></tr>
+            </tbody>
+          </table>
+
+          <p class="note" style="margin:16px 0 0">
+            A link on every row goes to the same transaction any explorer shows: <strong>the txids are the receipts,
+            and each one resolves on Zcash mainnet.</strong> A third party could not have written this list from the
+            chain alone — an explorer shows shielded transfers and nothing else, no amount, no sender, not even a
+            bid count. So each bidder checks that <strong>their own leg appears here</strong>; that is what stops a
+            seller from quietly dropping or inventing a bid. Amounts are published only at reveal, after the round closed.
+          </p>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-h">
+          <h2>How a bid works</h2>
+          <span class="sub">closed round &mdash; kept as the record</span>
         </div>
         <div class="card-b">
-          <div class="addr-row">
-            <div class="addr" id="ua">u1s8xflwcl60d0ck2z028duyrfh5zr0tufjq07skymr9u64j6fd2s2dg2l854puzlq0vwy4xutwp2exph6hvtxw9ukaqpwfswdvgq26ksf</div>
-            <button id="copy" title="Copy the seller's unified address">Copy</button>
+          <div class="warn ok" style="margin:0 0 18px">
+            <strong>DEMO-01 is closed and settled.</strong> No round is open right now, so nothing can be bid at the
+            address at the bottom of this card. When the next lot opens, its UA and deadline are published here first.
           </div>
-          <p class="note" style="margin:10px 0 22px">
-            This is the seller's <strong>unified (shielded) address</strong>. Send from a <strong>shielded</strong> balance —
-            a transfer from a transparent address is public, so it is <strong>not</strong> a valid bid.
-          </p>
 
           <ol class="steps">
             <li>
@@ -221,7 +276,7 @@
               <p>Zodl, Ywallet, Edge, Zkool, Zingo! or Noir. A shielded send is the only requirement — no memo needed.</p>
             </li>
             <li>
-              <strong>Send to the address above — the amount <i>is</i> your bid</strong>
+              <strong>Send to the seller's published UA — the amount <i>is</i> your bid</strong>
               <p>The amount is encrypted by the shielded pool: the public and every other bidder see only that <i>some</i> transfer happened. Set it to the maximum price you are willing to pay — you pay that only if you win, and if the clearing price is lower the difference comes back to the address you sent from.</p>
             </li>
             <li>
@@ -234,30 +289,18 @@
               </div>
             </li>
           </ol>
-        </div>
-      </section>
 
-      <section class="card">
-        <div class="card-h">
-          <h2>Commitment log</h2>
-          <span class="sub">what an outside observer can see</span>
-        </div>
-        <div class="card-b" style="padding-top:6px">
-          <table>
-            <thead>
-              <tr><th>When</th><th>Transaction</th><th>Amount</th><th>Who</th><th>Status</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>09-29 06:12</td><td class="strong">a41c…9e02</td><td>sealed</td><td>sealed</td><td><span class="tag sealed">sealed</span></td></tr>
-              <tr><td>09-29 11:48</td><td class="strong">7d0b…31fa</td><td>sealed</td><td>sealed</td><td><span class="tag sealed">sealed</span></td></tr>
-              <tr><td>09-30 02:07</td><td class="strong">c93e…7741</td><td>sealed</td><td>sealed</td><td><span class="tag sealed">sealed</span></td></tr>
-              <tr><td>—</td><td class="strong">reveal pending</td><td>—</td><td>—</td><td><span class="tag">2026-10-05 18:00 UTC</span></td></tr>
-            </tbody>
-          </table>
-          <p class="note" style="margin:14px 0 0">
-            A third party cannot even count the bids from the chain. The rows above are what the <strong>seller</strong>
-            chooses to publish — the txid list is the seller's receipt, and <strong>each bidder can check their own txid appears in it</strong>.
-            That is what stops a seller from quietly dropping or inventing a bid.
+          <p class="note" style="margin:22px 0 10px">
+            The UA that received the DEMO-01 bids (orchard, shielded):
+          </p>
+          <div class="addr-row">
+            <div class="addr" id="ua">u1s8xflwcl60d0ck2z028duyrfh5zr0tufjq07skymr9u64j6fd2s2dg2l854puzlq0vwy4xutwp2exph6hvtxw9ukaqpwfswdvgq26ksf</div>
+            <button id="copy" title="Copy the seller's unified address">Copy</button>
+          </div>
+          <p class="note" style="margin:10px 0 0">
+            This is the seller's real <strong>unified (shielded) address</strong>, kept here because it is the record of
+            the round. A shielded send is a valid bid only inside an open window — a transfer sent now would not be
+            part of any round and is not refunded automatically.
           </p>
         </div>
       </section>
@@ -266,23 +309,38 @@
     <!-- ============ rail ============ -->
     <aside>
       <section class="card">
-        <div class="card-h"><h2>Sealed state</h2></div>
+        <div class="card-h"><h2>Sealed round, in one glance</h2></div>
         <div class="card-b">
           <div class="sealbox">
             <svg class="lock" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <rect x="4.5" y="10.5" width="15" height="9.5" rx="2" stroke="currentColor" stroke-width="1.4"/>
               <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke="currentColor" stroke-width="1.4"/>
             </svg>
-            Amounts are encrypted end-to-end. Nobody on chain can read them — an explorer sees a shielded
-            transfer and nothing else. Only the seller's own wallet can decrypt a bid.
+            While the window was open, the amounts were encrypted end-to-end. Nobody on chain could read them —
+            an explorer saw shielded transfers and nothing else. Only the seller's own wallet could decrypt a bid.
           </div>
           <div style="margin-top:14px">
-            <div class="kv"><span class="k">Bids sealed</span><span class="v">3</span></div>
-            <div class="kv"><span class="k">Amounts visible</span><span class="v" style="color:var(--ink-4)">no</span></div>
-            <div class="kv"><span class="k">Bidder identities</span><span class="v" style="color:var(--ink-4)">no</span></div>
+            <div class="kv"><span class="k">Bids received</span><span class="v">3</span></div>
+            <div class="kv"><span class="k">Amounts on an explorer</span><span class="v" style="color:var(--ink-4)">never visible</span></div>
+            <div class="kv"><span class="k">Bidder identities</span><span class="v" style="color:var(--ink-4)">never visible</span></div>
+            <div class="kv"><span class="k">Bid count before close</span><span class="v" style="color:var(--ink-4)">never visible</span></div>
             <div class="kv"><span class="k">Live high bid</span><span class="v" style="color:var(--ink-4)">not possible</span></div>
+            <div class="kv"><span class="k">Published at reveal</span><span class="v">clearing price + ranking</span></div>
           </div>
-          <div class="hash">commitment at deadline =<br>sha256(sorted received legs)<br>not published yet — sealed until<br><span style="white-space:nowrap">2026-10-05 18:00 UTC</span></div>
+          <div class="hash">settled at height 3,499,452<br>2026-09-28 18:37:46 UTC<br>escrow in the lot wallet at close 0.0218 ZEC<br>lot wallet balance now 0 ZEC (swept back)</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-h"><h2>Re-check it yourself</h2></div>
+        <div class="card-b">
+          <ul class="evi">
+            <li><a href="../docs/DEMO_01_REPORT.md">Round report</a><span class="d">the whole round, written up</span></li>
+            <li><a href="../docs/demo_01_settlement.json">Settlement JSON</a><span class="d">clearing price, ranking, every txid</span></li>
+            <li><a href="../docs/demo_01_money_trail.json">Money trail</a><span class="d">all 12 legs, in and out</span></li>
+            <li><a href="../docs/demo_01_refund_receipts.json">Refund receipts</a><span class="d">what was already returned on chain</span></li>
+            <li><a href="https://jacksoxx.github.io/shieldbid/demo.mp4">Walkthrough video</a><span class="d">2:42 — the round, the console, the rules</span></li>
+          </ul>
         </div>
       </section>
 
@@ -290,12 +348,12 @@
         <div class="card-h"><h2>Before you send</h2></div>
         <div class="card-b">
           <ul class="wallets">
-            <li><span class="yes">✓</span><span><b>Zodl</b>, <b>Ywallet</b>, <b>Edge</b> — desktop &amp; mobile, shielded send built in</span></li>
-            <li><span class="yes">✓</span><span><b>Zkool</b>, <b>Zingo!</b>, <b>Nighthawk</b>, <b>Noir</b> — community wallets, shielded send built in</span></li>
-            <li><span class="yes">✓</span><span>Any wallet that can pay a <b>u1</b> (unified) address — that is the only requirement</span></li>
-            <li><span class="no">✕</span><span><b>Exchange withdrawals</b> — exchanges hold ZEC transparently, so the payout lands on a t1 and the amount is public</span></li>
-            <li><span class="no">✕</span><span><b>Multi-coin &amp; hardware wallets</b> — e.g. OKX Web3 wallet: no shielded (u1) send in the app, so a bid is impossible</span></li>
-            <li><span class="no">✕</span><span><b>Transparent (t-addr) sends</b> — the amount is public on chain</span></li>
+            <li><span class="yes">&#10003;</span><span><b>Zodl</b>, <b>Ywallet</b>, <b>Edge</b> — desktop &amp; mobile, shielded send built in</span></li>
+            <li><span class="yes">&#10003;</span><span><b>Zkool</b>, <b>Zingo!</b>, <b>Nighthawk</b>, <b>Noir</b> — community wallets, shielded send built in</span></li>
+            <li><span class="yes">&#10003;</span><span>Any wallet that can pay a <b>u1</b> (unified) address — that is the only requirement</span></li>
+            <li><span class="no">&#10007;</span><span><b>Exchange withdrawals</b> — exchanges hold ZEC transparently, so the payout lands on a t1 and the amount is public</span></li>
+            <li><span class="no">&#10007;</span><span><b>Multi-coin &amp; hardware wallets</b> — e.g. OKX Web3 wallet: no shielded (u1) send in the app, so a bid is impossible</span></li>
+            <li><span class="no">&#10007;</span><span><b>Transparent (t-addr) sends</b> — the amount is public on chain</span></li>
           </ul>
           <div class="warn">
             Self-test: open your wallet's send screen. If it offers no shielded/private send (no u1 recipient),
@@ -311,25 +369,16 @@
   </div>
 
   <div class="foot">
-    <span>ShieldBid · protocol SHIELDBID/1 (v0.2) · MIT</span>
+    <span>ShieldBid &middot; protocol SHIELDBID/1 (v0.2) &middot; MIT</span>
     <span class="sp"></span>
     <a href="../docs/SPEC.md">Protocol spec</a>
     <a href="../docs/BIDDER_GUIDE.md">Bidder guide</a>
+    <a href="https://github.com/Jacksoxx/shieldbid">Repository</a>
   </div>
 </main>
 
 <script>
-  // Countdown to the reveal moment. Static page: no backend, no tracking.
-  var TARGET = Date.UTC(2026, 9, 5, 18, 0, 0);
-  var el = document.getElementById('clock');
-  function tick(){
-    var d = TARGET - Date.now();
-    if (d <= 0) { el.textContent = 'bidding closed'; return; }
-    var dd = Math.floor(d/864e5), hh = Math.floor(d%864e5/36e5), mm = Math.floor(d%36e5/6e4);
-    el.textContent = 'seals in ' + dd + 'd ' + hh + 'h ' + mm + 'm';
-  }
-  tick(); setInterval(tick, 30000);
-
+  // Copy helpers. Static page: no backend, no tracking, no countdown to fake.
   function hook(btnId, srcId, label){
     var b = document.getElementById(btnId), s = document.getElementById(srcId);
     if(!b || !s) return;

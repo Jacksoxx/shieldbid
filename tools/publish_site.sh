@@ -36,11 +36,21 @@ grep -o "https://github.com/${OWNER}/shieldbid/blob/main/docs/[A-Za-z_]*\.md" "$
 echo "=== local asset refs (must be empty) ==="
 grep -o -E '(src|href)="[^"]*"' "$T/index.html" | grep -v -E 'https?://|data:|^href="#|mailto:' || echo "(none)"
 
+# The page links the walkthrough video at /shieldbid/demo.mp4, so it ships with the site:
+# a submission needs a public video link and this keeps it on the same static host.
+MP4="C:/Users/XiaoSS/spectmp/ShieldBid-DEMO-01-walkthrough.mp4"
+if [ -f "$MP4" ]; then
+  cp "$MP4" "$T/demo.mp4"
+  echo "video: $(wc -c < "$T/demo.mp4") bytes -> https://${OWNER}.github.io/shieldbid/demo.mp4"
+else
+  echo "video: MISSING at $MP4 - the link on the page will 404"
+fi
+
 cd "$T"
 git init -q -b gh-pages
 git config user.name "Qihao Xiao"
 git config user.email "86060929+${OWNER}@users.noreply.github.com"
-git add index.html .nojekyll
+git add -A
 git commit -q -m "site: publish the bidder console (generated from web/index.html)"
 git push -f -q "$REMOTE" gh-pages
 echo "published commit: $(git rev-parse --short HEAD)"
@@ -64,7 +74,13 @@ curl -s --noproxy "*" --max-time 25 "https://${OWNER}.github.io/shieldbid/" -o "
 echo "bytes=$(wc -c < 'C:/Users/XiaoSS/AppData/Local/Temp/live.html')"
 grep -o -i '<title>[^<]*</title>' "C:/Users/XiaoSS/AppData/Local/Temp/live.html"
 echo "doc links on the live page:"
-grep -o "https://github.com/${OWNER}/shieldbid/blob/main/docs/[A-Za-z_]*\.md" "C:/Users/XiaoSS/AppData/Local/Temp/live.html" | sort -u
+grep -o "https://github.com/${OWNER}/shieldbid/blob/main/docs/[A-Za-z0-9_]*\.\(md\|json\)" "C:/Users/XiaoSS/AppData/Local/Temp/live.html" | sort -u
+
+echo "=== verify the video link ==="
+curl -s --noproxy "*" -o /dev/null -w 'demo.mp4 http=%{http_code} type=%{content_type} bytes=%{size_download}\n' --max-time 90 "https://${OWNER}.github.io/shieldbid/demo.mp4" || true
+
+echo "=== no future dates left in the published copy (must be empty) ==="
+grep -o "2026-10-05\|2026-09-30\|1\.20 <small>" "C:/Users/XiaoSS/AppData/Local/Temp/live.html" || echo "(none)"
 echo "SITE_URL=https://${OWNER}.github.io/shieldbid/"
 echo "REPO_URL=https://github.com/${OWNER}/shieldbid"
 echo "DONE-SITE"

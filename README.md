@@ -2,9 +2,11 @@
 
 **ZECATHON · track: PRIVATE MARKETS**
 
-**Live demo:** [jacksoxx.github.io/shieldbid](https://jacksoxx.github.io/shieldbid/) — the lot board a bidder
-actually uses: the seller's UA to pay, the exact amount, the memo, and the sealed state of the round. One
-static HTML file, no backend, nothing to install — open it and look around. **Repository:**
+**Live demo:** [jacksoxx.github.io/shieldbid](https://jacksoxx.github.io/shieldbid/) — the board for the
+settled `DEMO-01` round: the lot, the sealed state it was in, the receipt list with every txid linked to a
+Zcash explorer, and the uniform-price outcome. One static HTML file, no backend, nothing to install — open it
+and look around. **Walkthrough video (2:42):**
+[jacksoxx.github.io/shieldbid/demo.mp4](https://jacksoxx.github.io/shieldbid/demo.mp4). **Repository:**
 [github.com/Jacksoxx/shieldbid](https://github.com/Jacksoxx/shieldbid)
 
 > *"The price should be public and the participants should not."*
