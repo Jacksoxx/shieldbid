@@ -203,7 +203,7 @@
       <section class="card">
         <div class="card-h">
           <h2>Place a sealed bid</h2>
-          <span class="sub">one shielded transfer, one memo</span>
+          <span class="sub">one shielded transfer — the amount is the bid</span>
         </div>
         <div class="card-b">
           <div class="addr-row">
@@ -212,24 +212,25 @@
           </div>
           <p class="note" style="margin:10px 0 22px">
             This is the seller's <strong>unified (shielded) address</strong>. Send from a <strong>shielded</strong> balance —
-            a transfer from a transparent address is public and the memo is rejected.
+            a transfer from a transparent address is public, so it is <strong>not</strong> a valid bid.
           </p>
 
           <ol class="steps">
             <li>
-              <strong>Open a wallet that can attach a memo</strong>
-              <p>Zashi, Zkool, Ywallet or Zingo. A memo field is the only requirement.</p>
+              <strong>Open a wallet with a shielded balance</strong>
+              <p>Zashi, Zkool, Ywallet, Zingo or Noir. A shielded send is the only requirement — no memo needed.</p>
             </li>
             <li>
-              <strong>Send to the address above, amount = your maximum price</strong>
-              <p>You will pay exactly this amount only if you win. If the clearing price is lower, the difference is refunded to the address you sent from.</p>
+              <strong>Send to the address above — the amount <i>is</i> your bid</strong>
+              <p>The amount is encrypted by the shielded pool: the public and every other bidder see only that <i>some</i> transfer happened. Set it to the maximum price you are willing to pay — you pay that only if you win, and if the clearing price is lower the difference comes back to the address you sent from.</p>
             </li>
             <li>
-              <strong>Type the bid into the memo field</strong>
+              <strong>A memo is optional decoration only</strong>
+              <p>If your wallet has a memo field you may type something readable for yourself — the protocol never parses it, the amount carries the bid:</p>
               <div class="fmt">
                 <code id="memo">BID 1.55</code>
                 <button id="copymemo" style="margin-left:auto">Copy memo</button>
-                <span class="hint">amount + nothing else</span>
+                <span class="hint">optional, never parsed</span>
               </div>
             </li>
           </ol>
@@ -272,7 +273,8 @@
               <rect x="4.5" y="10.5" width="15" height="9.5" rx="2" stroke="currentColor" stroke-width="1.4"/>
               <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke="currentColor" stroke-width="1.4"/>
             </svg>
-            Amounts are encrypted end-to-end. Not even the seller sees them before opening the memo.
+            Amounts are encrypted end-to-end. Nobody on chain can read them — an explorer sees a shielded
+            transfer and nothing else. Only the seller's own wallet can decrypt a bid.
           </div>
           <div style="margin-top:14px">
             <div class="kv"><span class="k">Bids sealed</span><span class="v">3</span></div>
@@ -280,7 +282,7 @@
             <div class="kv"><span class="k">Bidder identities</span><span class="v" style="color:var(--ink-4)">no</span></div>
             <div class="kv"><span class="k">Live high bid</span><span class="v" style="color:var(--ink-4)">not possible</span></div>
           </div>
-          <div class="hash">commitment at deadline = sha256(sorted sealed memo texts)<br>0000000000000000000000000000000000000000000000000000000000000000</div>
+          <div class="hash">commitment at deadline = sha256(sorted received legs)<br>0000000000000000000000000000000000000000000000000000000000000000</div>
         </div>
       </section>
 
@@ -288,11 +290,11 @@
         <div class="card-h"><h2>Before you send</h2></div>
         <div class="card-b">
           <ul class="wallets">
-            <li><span class="yes">✓</span><span><b>Zashi</b>, <b>Zkool</b> — memo + shielded send</span></li>
-            <li><span class="yes">✓</span><span><b>Ywallet</b>, <b>Zingo</b> — memo field supported</span></li>
-            <li><span class="no">✕</span><span><b>Exchanges</b> (withdrawals) — no memo field</span></li>
-            <li><span class="no">✕</span><span><b>OKX Web3 wallet</b> — no memo field</span></li>
-            <li><span class="no">✕</span><span><b>Transparent (t-addr) sends</b> — memo is not transmitted</span></li>
+            <li><span class="yes">✓</span><span><b>Zashi</b>, <b>Zkool</b> — shielded send</span></li>
+            <li><span class="yes">✓</span><span><b>Ywallet</b>, <b>Zingo</b>, <b>Noir</b> — shielded send</span></li>
+            <li><span class="no">✕</span><span><b>Exchanges</b> (withdrawals) — pay out to a transparent address</span></li>
+            <li><span class="no">✕</span><span><b>OKX Web3 wallet</b> — transparent-address product</span></li>
+            <li><span class="no">✕</span><span><b>Transparent (t-addr) sends</b> — the amount is public on chain</span></li>
           </ul>
           <div class="warn">
             Bids sent before the window opens, after the deadline, or below the reserve are not counted.
@@ -304,7 +306,7 @@
   </div>
 
   <div class="foot">
-    <span>ShieldBid · protocol v0.1 · MIT</span>
+    <span>ShieldBid · protocol SHIELDBID/1 (v0.2) · MIT</span>
     <span class="sp"></span>
     <a href="../docs/SPEC.md">Protocol spec</a>
     <a href="../docs/BIDDER_GUIDE.md">Bidder guide</a>
