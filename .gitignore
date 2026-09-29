@@ -28,5 +28,11 @@ Thumbs.db
 *.log
 *.tmp
 
-# 临时抓屏/调试产物（不入库）
+# Throwaway screenshots / debug output (never committed)
 docs/_*.png
+
+# internal working notes (kept on disk, not part of the submission)
+HANDOFF.md
+docs/M5_PLAN.md
+tools/make_roadmap_card.py
+docs/M5_ROADMAP.png

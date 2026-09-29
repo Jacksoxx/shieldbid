@@ -23,7 +23,7 @@ offer and raise the price against you:
 
 | Observation (measured 2026-09-29) | Value |
 |---|---|
-| Open offers visible on the public bid book | 16 offers · top **3.38 ZEC** · **22.71 ZEC** total (≈ $34,928) |
+| Open offers visible on the public bid book ([screenshot](docs/zilkroad_bids_evidence.png)) | 15 offers · top **3.38 ZEC** · **21.81 ZEC** total (≈ $33,157) |
 | Auction wording on that same page | *"existing bids can be viewed or raised at any time before the auction ends"* |
 | What a participant wrote afterwards | *"after analysing other people's bid amounts for 7 hours, I finally submitted my bid"* |
 
@@ -181,20 +181,3 @@ MIT licensed — see `LICENSE`.
 
 ---
 
-<details>
-<summary><b>中文速览（给中文读者）</b></summary>
-
-**一句话**：ShieldBid 把「密封竞价拍卖」做成了 Zcash 上的一次屏蔽转账 —— **你打的金额就是你的出价**，
-全程加密，只有卖家能看见；截止后只公布**清算价 + 名次**，输家的金额和身份永不公开。
-
-**为什么需要它**：现在的公开竞价台把每个人的出价摊在桌面上（实测同一页面 16 笔公开挂单、总额
-22.71 ZEC），有人明说"分析了别人出价 7 小时后才敢报"。密封竞标把这一步锁进密室。
-
-**真的跑过**：`DEMO-01` 在 Zcash **主网**完成一整轮 —— 3 笔密封出价、2 个名额、清算价 0.009 ZEC；
-一笔是真人用手机钱包手动发的。12 笔链上交易全部上链，逐笔 txid 见
-`docs/DEMO_01_REPORT.md`。全轮花的链上手续费约 0.001 ZEC（≈$1.5）。
-
-**诚实的局限**（写进 SPEC，不藏）：没有"实时最高价"这种东西（金额加密，卖家也做不到）；
-卖家是受托方，可以谎报清算价，第三方无法验算（这是隐私的代价）；出价一旦发出不可撤回。
-
-</details>
