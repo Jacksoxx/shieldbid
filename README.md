@@ -6,7 +6,9 @@
 settled `DEMO-01` round: the lot, the sealed state it was in, the receipt list with every txid linked to a
 Zcash explorer, and the uniform-price outcome. One static HTML file, no backend, nothing to install — open it
 and look around. **Walkthrough video (2:42):**
-[jacksoxx.github.io/shieldbid/demo.mp4](https://jacksoxx.github.io/shieldbid/demo.mp4). **Repository:**
+[jacksoxx.github.io/shieldbid/demo.mp4](https://jacksoxx.github.io/shieldbid/demo.mp4). **Evidence deck:**
+[jacksoxx.github.io/shieldbid/deck/](https://jacksoxx.github.io/shieldbid/deck/) — seven pages carrying the
+same figures, each one linked to the file or the transaction it came from. **Repository:**
 [github.com/Jacksoxx/shieldbid](https://github.com/Jacksoxx/shieldbid)
 
 > *"The price should be public and the participants should not."*
@@ -148,6 +150,8 @@ Engine setup, GraphQL cheat-sheet and the pitfalls that cost real time are in
 
 ```
 web/index.html              the public lot board (single file, no backend)
+docs/deck.html              the evidence deck (built from the recording canvas; every figure is a link)
+docs/fonts/                 the deck's pixel fonts — SIL OFL, licence text shipped alongside
 docs/SPEC.md                protocol spec SHIELDBID/1, incl. the threat model
 docs/BIDDER_GUIDE.md        wallet-level instructions for bidders
 docs/DEMO_01_REPORT.md      the mainnet round: receipts + honest limits
@@ -157,7 +161,8 @@ tools/demo_01_run.py        drives a full round: status/fund/bid/close/refund
 tools/demo_01_finish.py     wind-down: close → refund → sweep (idempotent)
 tools/*_card.py             the PNG result/status/roadmap cards used in this README
 tools/watch_bids.py         poll the lot UA for newly received notes
-tools/publish_site.sh       rebuild the live demo: web/index.html → the gh-pages branch
+tools/publish_site.sh       rebuild the live demo: console + video + deck → the gh-pages branch
+tools/build_deck.py         rebuild docs/deck.html from spectmp/deck.html (the recording canvas)
 ```
 
 ---

@@ -56,7 +56,9 @@ cp "$DECK"/demo01_result.png "$DECK"/demo01_status.png "$DECK"/demo01_trail.png 
    "$DECK"/refund_flow.png "$DECK"/zilkroad_bids_evidence.png "$T/deck/"
 cp "$DECK"/fonts/*.ttf "$T/deck/fonts/"
 echo "deck: $(ls "$T/deck" | wc -l) entries -> https://${OWNER}.github.io/shieldbid/deck/"
-grep -c 'file:///' "$T/deck/index.html" | sed 's/^/deck absolute file:\/\/ refs (must be 0): /'
+# grep -c exits 1 when the count is 0, and under `set -e`/pipefail that kills the script
+# right here -- which is exactly the case we are asserting. Guard it.
+echo "deck absolute file:// refs (must be 0): $(grep -c 'file:///' "$T/deck/index.html" || true)"
 
 cd "$T"
 git init -q -b gh-pages
