@@ -290,12 +290,17 @@
         <div class="card-h"><h2>Before you send</h2></div>
         <div class="card-b">
           <ul class="wallets">
-            <li><span class="yes">✓</span><span><b>Zashi</b>, <b>Zkool</b> — shielded send</span></li>
-            <li><span class="yes">✓</span><span><b>Ywallet</b>, <b>Zingo</b>, <b>Noir</b> — shielded send</span></li>
-            <li><span class="no">✕</span><span><b>Exchanges</b> (withdrawals) — pay out to a transparent address</span></li>
-            <li><span class="no">✕</span><span><b>OKX Web3 wallet</b> — transparent-address product</span></li>
+            <li><span class="yes">✓</span><span><b>Zodl</b> (aka <b>Zashi</b>), <b>Ywallet</b>, <b>Edge</b> — desktop &amp; mobile, shielded send built in</span></li>
+            <li><span class="yes">✓</span><span><b>Zkool</b>, <b>Zingo!</b>, <b>Nighthawk</b>, <b>Noir</b> — community wallets, shielded send built in</span></li>
+            <li><span class="yes">✓</span><span>Any wallet that can pay a <b>u1</b> (unified) address — that is the only requirement</span></li>
+            <li><span class="no">✕</span><span><b>Exchange withdrawals</b> — exchanges hold ZEC transparently, so the payout lands on a t1 and the amount is public</span></li>
+            <li><span class="no">✕</span><span><b>Multi-coin &amp; hardware wallets</b> — e.g. OKX Web3 wallet: no shielded (u1) send in the app, so a bid is impossible</span></li>
             <li><span class="no">✕</span><span><b>Transparent (t-addr) sends</b> — the amount is public on chain</span></li>
           </ul>
+          <div class="warn">
+            Self-test: open your wallet's send screen. If it offers no shielded/private send (no u1 recipient),
+            it cannot bid — shield your ZEC into a shielded-capable wallet first.
+          </div>
           <div class="warn">
             Bids sent before the window opens, after the deadline, or below the reserve are not counted.
             A late transfer is not refunded automatically — the seller returns it in the final batch.

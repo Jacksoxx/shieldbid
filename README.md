@@ -127,7 +127,7 @@ python tools/engine.py sync --net mainnet --account 1 --balance
 python tools/engine.py bids --net mainnet --account 1 --json
 ```
 
-A bidder with any shielded Zcash wallet (Zashi, Zkool, Ywallet, Zingo) needs **no tooling at all**:
+A bidder with any shielded Zcash wallet (Zodl/Zashi, Ywallet, Edge, Zkool, Zingo!, Nighthawk, Noir) needs **no tooling at all**:
 send the amount to the lot address. See `docs/BIDDER_GUIDE.md`.
 
 Engine setup, GraphQL cheat-sheet and the pitfalls that cost real time are in

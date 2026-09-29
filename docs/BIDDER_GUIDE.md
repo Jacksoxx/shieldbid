@@ -15,13 +15,19 @@ Any wallet that can send **shielded (z→z)** ZEC works. A memo field is *not* r
 
 | Wallet | Platform | Notes |
 |---|---|---|
-| **Zashi** | iOS / Android | simplest path, shielded by default |
-| **Zkool** | Windows / macOS / Linux / Android | desktop option |
+| **Zodl** (aka **Zashi**) | iOS / Android | ECC's wallet, shielded by default |
 | **Ywallet** | iOS / Android / desktop | send from the shielded balance |
-| **Zingo** | iOS / Android / desktop | send from the shielded balance |
+| **Edge Wallet** | iOS / Android | shielded ZEC send |
+| **Zkool** | Windows / macOS / Linux / Android | desktop option |
+| **Zingo!** | iOS / Android / desktop | send from the shielded balance |
+| **Nighthawk** | Android | send from the shielded balance |
 | **Noir** (used in our live demo) | iOS / Android | shielded pool wallet, worked end to end |
-| Exchanges (Binance, OKX, …) | — | withdrawal goes to a transparent address you then have to shield; **a bid sent from a transparent address is public and does not count** |
-| OKX Web3 wallet | — | same problem: it is a transparent-address product |
+| Exchanges (OKX, Binance, …) | — | a withdrawal lands on a **transparent** address; you must shield it in your own wallet first |
+| OKX Web3 wallet, most hardware-wallet flows | — | no shielded (u1) send path — it can only pay a t1 address, so it **cannot** place a bid |
+
+**Self-test (5 seconds):** open your wallet's *Send* screen. If it offers no shielded/private send and
+you cannot paste a `u1` recipient, that wallet cannot bid — move your ZEC into one of the wallets above.
+The official wallet list lives at [z.cash/ecosystem](https://z.cash/ecosystem/?wallets=#tag-wallets).
 
 **Fund the wallet with shielded ZEC before you bid.** If your wallet shows a separate
 "shielded"/"orchard" balance, make sure the funds are *there*: a transfer from a transparent balance
