@@ -46,6 +46,18 @@ else
   echo "video: MISSING at $MP4 - the link on the page will 404"
 fi
 
+# The console also links the interactive evidence deck at /shieldbid/deck/. The deck is
+# built (tools/build_deck.py) from the recording canvas into docs/, and it references the
+# evidence PNGs relatively, so it ships as one folder: html + 5 PNGs + the pixel fonts.
+DECK="C:/Users/XiaoSS/shieldbid/docs"
+mkdir -p "$T/deck" "$T/deck/fonts"
+cp "$DECK/deck.html" "$T/deck/index.html"
+cp "$DECK"/demo01_result.png "$DECK"/demo01_status.png "$DECK"/demo01_trail.png \
+   "$DECK"/refund_flow.png "$DECK"/zilkroad_bids_evidence.png "$T/deck/"
+cp "$DECK"/fonts/*.ttf "$T/deck/fonts/"
+echo "deck: $(ls "$T/deck" | wc -l) entries -> https://${OWNER}.github.io/shieldbid/deck/"
+grep -c 'file:///' "$T/deck/index.html" | sed 's/^/deck absolute file:\/\/ refs (must be 0): /'
+
 cd "$T"
 git init -q -b gh-pages
 git config user.name "Qihao Xiao"
@@ -78,6 +90,12 @@ grep -o "https://github.com/${OWNER}/shieldbid/blob/main/docs/[A-Za-z0-9_]*\.\(m
 
 echo "=== verify the video link ==="
 curl -s --noproxy "*" -o /dev/null -w 'demo.mp4 http=%{http_code} type=%{content_type} bytes=%{size_download}\n' --max-time 90 "https://${OWNER}.github.io/shieldbid/demo.mp4" || true
+
+echo "=== verify the deck (html + an image + a font) ==="
+curl -s --noproxy "*" -o /dev/null -w 'deck/ http=%{http_code} type=%{content_type} bytes=%{size_download}\n' --max-time 30 "https://${OWNER}.github.io/shieldbid/deck/" || true
+for f in demo01_status.png refund_flow.png fonts/VT323-Regular.ttf; do
+  curl -s --noproxy "*" -o /dev/null -w "deck/$f http=%{http_code}\n" --max-time 30 "https://${OWNER}.github.io/shieldbid/deck/$f" || true
+done
 
 echo "=== no future dates left in the published copy (must be empty) ==="
 grep -o "2026-10-05\|2026-09-30\|1\.20 <small>" "C:/Users/XiaoSS/AppData/Local/Temp/live.html" || echo "(none)"

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ShieldBid DEMO-01 — recording deck</title>
+<style>
+  @font-face{font-family:PixHead;src:url("fonts/Silkscreen-Bold.ttf") format("truetype")}
+  @font-face{font-family:PixHeadR;src:url("fonts/Silkscreen-Regular.ttf") format("truetype")}
+  @font-face{font-family:PixMono;src:url("fonts/VT323-Regular.ttf") format("truetype")}
+
+  :root{
+    --bg:#0b0f14; --box:#141c26; --edge:#2b3a4a; --txt:#e6edf3; --dim:#8b98a5;
+    --acc:#4ea1ff; --good:#3ddc97; --warn:#ffb340; --bad:#f85149;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--txt);
+    font-family:PixMono,ui-monospace,Consolas,monospace;font-size:19px}
+  .slide{position:fixed;inset:0;display:none;flex-direction:column;padding:3.4vh 3vw 3.2vh}
+  .slide.on{display:flex}
+
+  .cap{flex:none;position:relative;padding-left:20px;margin-bottom:2.6vh}
+  .cap:before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:4px;
+    background:var(--acc);border-radius:2px}
+  .tag{display:block;font-family:PixHeadR,monospace;font-size:12px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--acc)}
+  h1{font-family:PixHead,monospace;font-size:clamp(21px,2.1vw,34px);line-height:1.3;
+    margin:1.5vh 0 0;font-weight:700;letter-spacing:.005em}
+  .sub{margin:1.2vh 0 0;color:var(--dim);font-size:clamp(17px,1.5vw,25px);line-height:1.25}
+  .sub b{color:var(--txt);font-weight:400}
+
+  .stage{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;
+    overflow:hidden}
+  img{max-width:100%;max-height:100%;display:block;border:1px solid var(--edge);
+    border-radius:10px;background:#0f1620}
+  .winbox{width:100%;height:100%;overflow:hidden;border:1px solid var(--edge);
+    border-radius:10px;background:#0f1620;position:relative}
+  .winbox img{width:100%;max-height:none;border:0;border-radius:0;
+    animation:pan1 46s linear forwards}
+  @keyframes pan1{from{transform:translateY(0)}to{transform:translateY(-30%)}}
+
+  /* 5 / honest limits */
+  .limits{list-style:none;margin:0;padding:0;width:100%;max-width:1300px;
+    display:flex;flex-direction:column;gap:3vh}
+  .limits li{display:flex;gap:2.2vw;align-items:flex-start;background:var(--box);
+    border:1px solid var(--edge);border-left:4px solid var(--warn);border-radius:10px;
+    padding:2.4vh 2.2vw}
+  .limits b{flex:none;width:190px;font-family:PixHead,monospace;font-size:15px;
+    line-height:1.5;color:var(--warn);font-weight:700}
+  .limits span{font-size:clamp(17px,1.42vw,24px);line-height:1.32;color:var(--txt)}
+
+  /* 6b / what is in the repo */
+  .two{display:flex;gap:1.4vw;width:100%}
+  .col{flex:1 1 0;background:var(--box);border:1px solid var(--edge);border-radius:10px;
+    padding:2.6vh 1.6vw;text-align:left}
+  .col h3{font-family:PixHead,monospace;font-size:15px;margin:0 0 2.2vh;color:var(--good);
+    letter-spacing:.02em}
+  .mono{font-size:clamp(16px,1.35vw,23px);line-height:1.62;color:var(--dim)}
+  .mono b{color:var(--txt);font-weight:400}
+  .close{margin-top:3vh;text-align:center;color:var(--dim);
+    font-size:clamp(16px,1.35vw,23px)}
+  .close b{color:var(--txt);font-weight:400}
+  #s6b .stage{flex-direction:column;justify-content:center}
+  /* page indicator (manual paging) */
+  a{color:var(--acc);text-decoration:none;border-bottom:1px dotted var(--acc)}
+  a:hover{color:#8ec6ff;border-bottom-style:solid}
+  #pager{position:fixed;right:1.4vw;bottom:1.2vh;font-family:PixHeadR,monospace;font-size:12px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--dim);opacity:.75;
+    pointer-events:none;z-index:99}
+  #pager b{color:var(--txt);font-weight:400}
+</style>
+</head>
+<body>
+<div id="pager"><b id="pnum">1 / 7</b> &nbsp; click or arrow-keys to page</div>
+
+<!-- 1 / PROBLEM -->
+<section class="slide" id="s1">
+  <div class="cap">
+    <span class="tag">1 / The problem</span>
+    <h1>Bids on an open marketplace are a public book</h1>
+    <p class="sub">Read off the live listing page, 2026-09-29 — <b>every amount and every rival's move is visible</b></p>
+  </div>
+  <div class="stage">
+    <div class="winbox"><img src="zilkroad_bids_evidence.png"></div>
+  </div>
+</section>
+
+<!-- 3 / THE ROUND -->
+<section class="slide" id="s3">
+  <div class="cap">
+    <span class="tag">2 / The round</span>
+    <h1>Three sealed bids arrived — only the seller can read them</h1>
+    <p class="sub">0.012, 0.009 and 0.004 ZEC — <b>one sent by hand from a Noir wallet</b></p>
+  </div>
+  <div class="stage">
+    <img src="demo01_status.png?v=8">
+  </div>
+</section>
+
+<!-- 4 / REVEAL -->
+<section class="slide" id="s4">
+  <div class="cap">
+    <span class="tag">3 / Reveal</span>
+    <h1>At the reveal: one clearing price, one ranking</h1>
+  </div>
+  <div class="stage">
+    <img src="demo01_result.png?v=8">
+  </div>
+</section>
+
+<!-- 4b / THE MONEY TRAIL -->
+<section class="slide" id="s4b">
+  <div class="cap">
+    <span class="tag">4 / The money trail</span>
+    <h1>Twelve legs, every transaction id public, every amount private</h1>
+  </div>
+  <div class="stage">
+    <img src="demo01_trail.png?v=8">
+  </div>
+</section>
+
+<!-- 5 / HONEST LIMITS -->
+<section class="slide" id="s5">
+  <div class="cap">
+    <span class="tag">5 / Honest limits</span>
+    <h1>What ShieldBid does not do</h1>
+  </div>
+  <div class="stage">
+    <ul class="limits">
+      <li><b>No live high bid</b><span>The amounts are encrypted, so nobody — not even the seller — can honestly compute a running highest bid. Bidders decide on their own valuation, not on a leaderboard.</span></li>
+      <li><b>Trusted seller</b><span>The seller decides the clearing price and the ranking, and a third party cannot verify those from the chain alone. What the chain does prove is the money.</span></li>
+      <li><b>No withdrawals</b><span>A bid cannot be retracted — the transfer is already on-chain. Funds are returned after the reveal, so a bidder must be sure before sending.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 6a / MONEY IN MOTION -->
+<section class="slide" id="s6a">
+  <div class="cap">
+    <span class="tag">6 / Money in motion</span>
+    <h1>Where the money went — end to end, on mainnet</h1>
+    <p class="sub">Every leg is a real transaction: <b>amounts private, transaction ids public</b></p>
+  </div>
+  <div class="stage">
+    <img src="refund_flow.png?v=8">
+  </div>
+</section>
+
+<!-- 6b / WHAT IS IN THE REPO -->
+<section class="slide" id="s6b">
+  <div class="cap">
+    <span class="tag">7 / Wrap</span>
+    <h1>Everything a judge needs is in the repository</h1>
+  </div>
+  <div class="stage">
+    <div class="two">
+      <div class="col">
+        <h3>The protocol and the rules</h3>
+        <div class="mono">
+          <a href="https://github.com/Jacksoxx/shieldbid/blob/main/docs/SPEC.md" target="_blank">docs/SPEC.md</a> — protocol, SHIELDBID/1<br>
+          <a href="https://github.com/Jacksoxx/shieldbid/blob/main/docs/BIDDER_GUIDE.md" target="_blank">docs/BIDDER_GUIDE.md</a> — how to bid<br>
+          <a href="https://github.com/Jacksoxx/shieldbid/blob/main/docs/ENGINE_SETUP.md" target="_blank">docs/ENGINE_SETUP.md</a> — run the engine<br>
+          <a href="https://github.com/Jacksoxx/shieldbid/blob/main/web/index.html" target="_blank">web/index.html</a> — the live lot page<br>
+          <b>tools/</b> — the round's scripts, as run
+        </div>
+      </div>
+      <div class="col">
+        <h3>The evidence</h3>
+        <div class="mono">
+          <a href="https://github.com/Jacksoxx/shieldbid/blob/main/docs/demo_01_settlement.json" target="_blank">docs/demo_01_settlement.json</a> — receipt<br>
+          <a href="https://github.com/Jacksoxx/shieldbid/blob/main/docs/demo_01_money_trail.json" target="_blank">docs/demo_01_money_trail.json</a> — 12 legs<br>
+          <a href="https://github.com/Jacksoxx/shieldbid/blob/main/docs/demo_01_refund_receipts.json" target="_blank">docs/demo_01_refund_receipts.json</a> — refunds<br>
+          <a href="https://github.com/Jacksoxx/shieldbid/blob/main/docs/DEMO_01_REPORT.md" target="_blank">docs/DEMO_01_REPORT.md</a> — round write-up<br>
+          <a href="https://github.com/Jacksoxx/shieldbid/blob/main/docs/SPEC.md" target="_blank">docs/SPEC.md §7</a> — limits, stated plainly
+        </div>
+      </div>
+      <div class="col">
+        <h3>Re-check it yourself</h3>
+        <div class="mono">
+          <b>clone</b> the <a href="https://github.com/Jacksoxx/shieldbid" target="_blank">repository</a> and open <a href="https://github.com/Jacksoxx/shieldbid/blob/main/web/index.html" target="_blank">web/index.html</a><br>
+          <b>look up</b> any txid on a <a href="https://mainnet.zcashexplorer.app/transactions/56bb6efa5a23841f2212211de3776f66a3231d28a230e831c0e9f6a05c715a40" target="_blank">Zcash explorer</a><br>
+          <b>diff</b> the <a href="https://github.com/Jacksoxx/shieldbid/blob/main/docs/demo_01_settlement.json" target="_blank">receipt</a> against <a href="https://github.com/Jacksoxx/shieldbid/blob/main/docs/SPEC.md" target="_blank">SPEC.md</a><br>
+          <b>re-run</b> the engine: <a href="https://github.com/Jacksoxx/shieldbid/blob/main/docs/ENGINE_SETUP.md" target="_blank">ENGINE_SETUP.md</a><br>
+          <b>check</b> the <a href="https://github.com/Jacksoxx/shieldbid/blob/main/docs/demo_01_money_trail.json" target="_blank">refund legs</a> address by address
+        </div>
+      </div>
+    </div>
+    <div class="close">Ran on <b>Zcash mainnet</b> · 12 transactions · about <b>0.001 ZEC</b> of chain fees</div>
+  </div>
+</section>
+
+<script>
+  var SLIDES = [];
+  (function () {
+    var all = document.querySelectorAll('.slide');
+    for (var i = 0; i < all.length; i++) SLIDES.push(all[i].id);
+  })();
+  var cur = 0;
+
+  // Every load refetches the evidence images from disk. Without this, a renderer
+  // cache can keep serving a card that was already regenerated, and a recording
+  // then bakes the stale card into the video.
+  (function () {
+    var stamp = Date.now();
+    var im = document.querySelectorAll('img');
+    for (var i = 0; i < im.length; i++) {
+      var src = im[i].getAttribute('src');
+      if (!src || src.indexOf('data:') === 0) continue;
+      im[i].setAttribute('src', src.split('?')[0] + '?t=' + stamp);
+    }
+  })();
+
+  // Count images that are not decoded yet, so a recorder can wait for a clean frame.
+  window.imagesPending = function () {
+    var im = document.querySelectorAll('img'), n = 0;
+    for (var i = 0; i < im.length; i++) {
+      if (!im[i].complete || im[i].naturalWidth === 0) n++;
+    }
+    return n;
+  };
+
+  function paint() {
+    var el = document.getElementById('pnum');
+    if (el) el.textContent = (cur + 1) + ' / ' + SLIDES.length;
+  }
+
+  window.show = function (id) {
+    var all = document.querySelectorAll('.slide');
+    for (var i = 0; i < all.length; i++) {
+      var on = all[i].id === id;
+      all[i].classList.toggle('on', on);
+      if (on) {
+        cur = SLIDES.indexOf(id);
+        var im = all[i].querySelectorAll('img');
+        for (var j = 0; j < im.length; j++) {           // restart the pan animation
+          im[j].style.animation = 'none';
+          void im[j].offsetWidth;
+          im[j].style.animation = '';
+        }
+      }
+    }
+    paint();
+    return 'shown ' + id;
+  };
+
+  window.step = function (d) {
+    var n = cur + d;
+    if (n < 0) n = 0;
+    if (n > SLIDES.length - 1) n = SLIDES.length - 1;
+    return window.show(SLIDES[n]);
+  };
+
+  // Paging is live by default: open the file and the arrow keys work. Only the
+  // recorder turns it off (window.lockNav()), so a stray keypress can never flip a
+  // slide mid-take. ?nav=0 also disables it.
+  window.navOff = /(?:^|[?&])nav=0/.test(location.search);
+  window.lockNav = function () {
+    window.navOff = true;
+    var pg = document.getElementById('pager');
+    if (pg) pg.style.display = 'none';       // keep the paging hint out of a take
+    return 'nav locked';
+  };
+  window.unlockNav = function () {
+    window.navOff = false;
+    var pg = document.getElementById('pager');
+    if (pg) pg.style.display = '';
+    return 'nav live';
+  };
+
+  document.addEventListener('keydown', function (e) {
+    if (window.navOff) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'ArrowDown' || k === ' ' || k === 'PageDown' || k === 'Enter') {
+      window.step(1); e.preventDefault();
+    } else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp' || k === 'Backspace') {
+      window.step(-1); e.preventDefault();
+    } else if (k === 'Home') {
+      window.show(SLIDES[0]); e.preventDefault();
+    } else if (k === 'End') {
+      window.show(SLIDES[SLIDES.length - 1]); e.preventDefault();
+    } else if (k >= '1' && k <= '9') {
+      var i = parseInt(k, 10) - 1;
+      if (i < SLIDES.length) { window.show(SLIDES[i]); e.preventDefault(); }
+    }
+  });
+
+  document.addEventListener('click', function (e) {
+    if (window.navOff) return;
+    if (e.target && e.target.closest && e.target.closest('a')) return;  // links are links
+    window.step(e.clientX > window.innerWidth * 0.4 ? 1 : -1);
+  });
+
+  window.curSlide = function () { return SLIDES[cur]; };
+
+  window.show('s1');
+</script>
+</body>
+</html>
