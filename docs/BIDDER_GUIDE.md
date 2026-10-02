@@ -22,8 +22,8 @@ Any wallet that can send **shielded (z→z)** ZEC works. A memo field is *not* r
 | **Zingo!** | iOS / Android / desktop | send from the shielded balance |
 | **Nighthawk** | Android | send from the shielded balance |
 | **Noir** (used in our live demo) | iOS / Android | shielded pool wallet, worked end to end |
-| Exchanges (OKX, Binance, …) | — | a withdrawal lands on a **transparent** address; you must shield it in your own wallet first |
-| OKX Web3 wallet, most hardware-wallet flows | — | no shielded (u1) send path — it can only pay a t1 address, so it **cannot** place a bid |
+| Exchange withdrawals | — | the payout lands on a **transparent** (t1) address; you must shield it in your own wallet first |
+| Multi-coin & hardware-wallet flows with no shielded (u1) send of their own | — | if the app can only pay a t1 address, it **cannot** place a bid |
 
 **Self-test (5 seconds):** open your wallet's *Send* screen. If it offers no shielded/private send and
 you cannot paste a `u1` recipient, that wallet cannot bid — move your ZEC into one of the wallets above.

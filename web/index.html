@@ -346,6 +346,17 @@
       </section>
 
       <section class="card">
+        <div class="card-h"><h2>What this does not do</h2><span class="sub">stated, not hidden</span></div>
+        <div class="card-b">
+          <p class="note"><b>The seller is a trusted party.</b> It holds the lot keys, so it can decrypt a bid from the first block, and it can lie about the arithmetic behind the published clearing price. A third party cannot recompute that price from chain data alone — that is the price of privacy. What the chain does prove is the money: every revealed leg must be backed by a real txid paying the lot address.</p>
+          <p class="note"><b>No live &ldquo;current high bid&rdquo; exists.</b> The amounts are encrypted, so nobody — not even the seller — can honestly publish a standing price during the round. We do not fake one.</p>
+          <p class="note"><b>A sent shielded transfer is final.</b> A bid cannot be retracted after the deadline, so bid a price you are happy to pay. Custody is the seller's until the refund batch is broadcast — its txids are published above.</p>
+          <p class="note"><b>The asset is out of scope.</b> Zcash has no live mainnet asset/NFT standard, so the lot's item is referenced off-chain by id/URI, and no item changed hands in DEMO-01. ShieldBid settles the price discovery, not the asset.</p>
+          <p class="note" style="margin-bottom:0">Full threat model, table form: <a href="../docs/SPEC.md">docs/SPEC.md</a> §7 — every threat, marked covered or not covered.</p>
+        </div>
+      </section>
+
+      <section class="card">
         <div class="card-h"><h2>Before you send</h2></div>
         <div class="card-b">
           <ul class="wallets">
@@ -353,7 +364,7 @@
             <li><span class="yes">&#10003;</span><span><b>Zkool</b>, <b>Zingo!</b>, <b>Nighthawk</b>, <b>Noir</b> — community wallets, shielded send built in</span></li>
             <li><span class="yes">&#10003;</span><span>Any wallet that can pay a <b>u1</b> (unified) address — that is the only requirement</span></li>
             <li><span class="no">&#10007;</span><span><b>Exchange withdrawals</b> — exchanges hold ZEC transparently, so the payout lands on a t1 and the amount is public</span></li>
-            <li><span class="no">&#10007;</span><span><b>Multi-coin &amp; hardware wallets</b> — e.g. OKX Web3 wallet: no shielded (u1) send in the app, so a bid is impossible</span></li>
+            <li><span class="no">&#10007;</span><span><b>Multi-coin &amp; hardware wallets</b> — if the app has no shielded (u1) send of its own, a bid is impossible from it</span></li>
             <li><span class="no">&#10007;</span><span><b>Transparent (t-addr) sends</b> — the amount is public on chain</span></li>
           </ul>
           <div class="warn">
